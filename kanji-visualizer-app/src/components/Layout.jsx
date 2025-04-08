@@ -41,7 +41,7 @@ function Layout() {
                 <div className="container mx-auto flex justify-between items-center px-4 sm:px-6">
                     {/* Logo */}
                     <Link to="/" className={`text-3xl font-heading font-bold ${primaryColor} transition-colors flex items-center gap-1 hover:brightness-125`}>
-                        漢字<span className={`text-4xl font-display`}>Viz</span>
+                        Kanji <span className={`text-4xl font-display`}> Visualizer</span>
                     </Link>
 
                     {/* Right side: Grade Links (Conditional) + Theme Toggle */}

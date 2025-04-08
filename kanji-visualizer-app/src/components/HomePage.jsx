@@ -5,12 +5,12 @@ import { motion } from 'framer-motion';
 
 // --- Descriptive Text --- (No change)
 const toolDescription = `
-    KanjiViz transforms the often challenging task of learning Kanji into an engaging visual journey.
-    Explore characters by grade level or JLPT proficiency, delve into detailed meanings, readings,
+    Kanji Visualizer transforms the often challenging task of learning Kanji into an engaging visual journey.
+    Explore characters by grade level or search functionality, delve into detailed meanings, readings,
     and examples, visualize stroke order animations, and discover connections between related Kanji
     through interactive graphs. This tool is designed to be intuitive for young learners beginning
     their Japanese studies and powerful enough for JLPT candidates aiming to master complex characters.
-    Track your progress and build a solid foundation for Japanese literacy.
+    Build a solid foundation for Japanese literacy with this tool.
 `;
 
 function HomePage() {
