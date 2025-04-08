@@ -78,11 +78,6 @@ function Layout() {
             <main className="container mx-auto p-4 py-6 md:p-6 md:py-8 relative z-10 flex-grow">
                 <Outlet /> {/* Renders HomePage or KanjiGrid etc. via AnimatedRoutes */}
             </main>
-
-            {/* Footer */}
-            <footer className={`text-center p-6 text-xs border-t ${theme === 'light' ? 'text-slate-500 border-slate-200/50' : 'text-slate-400/70 border-slate-800/50'}`}>
-                © {new Date().getFullYear()} Kanji<span className={primaryColor}>Viz</span> - Genesis Edition
-            </footer>
         </div>
     );
 }

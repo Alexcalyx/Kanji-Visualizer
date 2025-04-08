@@ -1,4 +1,4 @@
-// src/components/PaginationControls.jsx
+// src/components/PaginationControls.jsx (Modified for spacing using margin)
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
@@ -20,14 +20,12 @@ function PaginationControls({ currentPage, totalPages, onPageChange }) {
         }
     };
 
-    // Basic button styling, can be enhanced
     const buttonBase = `px-3 py-1.5 rounded-lg transition-all duration-200 shadow-md border flex items-center justify-center text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:hover:translate-y-0 transform hover:-translate-y-0.5`;
     const buttonStyle = theme === 'light'
         ? 'bg-white/70 border-slate-300/70 hover:bg-sky-50/80 text-slate-700 disabled:bg-slate-100 disabled:text-slate-400'
         : 'bg-slate-700/70 border-slate-600/70 hover:bg-slate-600/90 text-slate-200 disabled:bg-slate-800 disabled:text-slate-500';
     const iconColor = theme === 'light' ? 'text-slate-600' : 'text-slate-300';
 
-    // Don't render controls if there's only one page or fewer
     if (totalPages <= 1) {
         return null;
     }
@@ -36,8 +34,10 @@ function PaginationControls({ currentPage, totalPages, onPageChange }) {
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }} // Appear after grid items
-            className="flex items-center justify-center space-x-3 mt-8 mb-4" // Added margin
+            transition={{ delay: 0.5 }}
+            // --- MODIFIED: Removed space-x, now relies on margin on the span ---
+            className="flex items-center justify-center"
+            // --- END MODIFICATION ---
             aria-label="Pagination"
         >
             <motion.button
@@ -52,8 +52,10 @@ function PaginationControls({ currentPage, totalPages, onPageChange }) {
                 <span className="ml-1 hidden sm:inline">Prev</span>
             </motion.button>
 
-            <span className={`text-sm font-medium ${theme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>
-                Page {currentPage} of {totalPages}
+            {/* --- MODIFIED: Added horizontal margin (mx-6) --- */}
+            <span className={`text-sm font-medium mx-6 ${theme === 'light' ? 'text-slate-600' : 'text-slate-400'}`}>
+            {/* --- END MODIFICATION --- */}
+                      Page {currentPage} of {totalPages}
             </span>
 
             <motion.button
