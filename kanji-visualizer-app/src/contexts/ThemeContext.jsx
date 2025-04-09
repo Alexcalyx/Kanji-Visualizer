@@ -14,13 +14,14 @@ export const useTheme = () => {
 };
 
 export function ThemeProvider({ children }) {
+    // To ALWAYS default to light mode on first visit:
     const [theme, setTheme] = useState(() => {
         const storedTheme = localStorage.getItem('theme');
         if (storedTheme) {
-            return storedTheme;
+            return storedTheme; // Use saved theme if exists
         }
-        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    });
+        return 'light';
+  });
 
     const toggleTheme = useCallback(() => {
         setTheme(prevTheme => {
