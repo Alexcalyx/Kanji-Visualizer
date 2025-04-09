@@ -2,12 +2,11 @@
 import React, { useContext } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-// Context for theme state
-import { ThemeContext } from '../contexts/ThemeContext'; // Adjust path if needed
-// Background component
+import { ThemeContext } from '../contexts/ThemeContext'; 
 import ParticlesBackground from './ParticlesBackground';
+import Footer from './Footer'; // <-- Import the Footer component
 // The new theme toggle button component
-// import ThemeToggleButton from './ThemeToggleButton'; // Adjust path if needed
+// import ThemeToggleButton from './ThemeToggleButton'; 
 
 function Layout() {
     // Get theme state from context for styling elements within Layout
@@ -82,7 +81,7 @@ function Layout() {
             </main>
 
             {/* You can add a Footer component here if needed */}
-            {/* <Footer /> */}
+            <Footer />
 
         </div> // End main container
     );
