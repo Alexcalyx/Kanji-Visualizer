@@ -6,12 +6,11 @@ import { motion } from 'framer-motion';
 // --- Descriptive Text --- (No change)
 const toolDescription = `
     Kanji Visualizer transforms the often challenging task of learning Kanji into an engaging visual journey.
-    Explore characters by grade level or search functionality, delve into detailed meanings, readings,
-    and examples, visualize stroke order animations, and discover connections between related Kanji
-    through interactive graphs. This tool is designed to be intuitive for young learners beginning
+    Explore characters by grade level, delve into detailed meanings, readings,
+    and examples, and visualize stroke order animations. This tool is designed to be intuitive for young learners beginning
     their Japanese studies and powerful enough for JLPT candidates aiming to master complex characters.
     Build a solid foundation for Japanese literacy with this tool.
-`; // Note: Removed leading spaces for cleaner rendering if needed
+`; 
 
 function HomePage() {
     // Link styling (No change)
@@ -26,26 +25,26 @@ function HomePage() {
             className="flex flex-col items-center justify-center text-center min-h-[70vh] px-4"
         >
             {/* Title */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-8">
                 Kanji Learning Tool
             </h1>
 
             {/* Description */}
             {/* --- CHANGE HERE: Increased max-w-2xl to max-w-4xl --- */}
-            <p className="text-base md:text-lg max-w-4xl mb-10">
+            <p className="text-base md:text-lg max-w-6xl">
                 {toolDescription}
             </p>
 
             {/* --- Grade Links Section --- */}
             {/* --- CHANGES HERE: Removed flex-wrap, increased max-w-xl to max-w-4xl, removed gap-y-4 --- */}
-            <div className="flex justify-center items-center gap-x-6 pt-6 pb-4 w-full max-w-4xl overflow-x-auto">
+            <div className="flex justify-center items-center pt-6 pb-4 w-full max-w-4xl overflow-x-auto">
                 {/* Label */}
                 {/* Added whitespace-nowrap to prevent label wrapping */}
                 <span className="text-base font-semibold mr-4 flex-shrink-0 whitespace-nowrap">
                     Browse by Grade:
                 </span>
                 {/* Grade Links Container - Added internal flex container for links */}
-                <div className="flex items-center gap-x-6">
+                <div className="flex items-center ">
                      {[1, 2, 3, 4, 5, 6].map(grade => (
                         <Link key={grade} to={`/grade/${grade}`} className={gradeLinkStyle}>
                             Grade {grade}

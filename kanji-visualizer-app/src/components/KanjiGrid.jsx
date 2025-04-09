@@ -58,7 +58,7 @@ function KanjiGrid() {
     if (isLoading) return (
         <div className="flex flex-col items-center justify-center min-h-[40vh]">
             {/* <Spinner size="lg" /> */}
-            <p className="mt-4 text-lg text-subtle-light dark:text-subtle-dark">Loading Grade {gradeId} Kanji...</p>
+            {/* <p className="mt-4 text-lg text-subtle-light dark:text-subtle-dark">Loading Grade {gradeId} Kanji...</p> */}
         </div>
     );
 
