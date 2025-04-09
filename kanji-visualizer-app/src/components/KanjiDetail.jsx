@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import useKanjiDetails from '../hooks/useKanjiDetails'; // Adjust path if needed
@@ -30,6 +30,7 @@ function KanjiDetailReplicaFinalLayout() {
     const { character } = useParams();
     // Fetch data using the custom hook
     const { details, isLoading: detailsLoading, error: detailsError } = useKanjiDetails(character);
+    const videoRef = useRef(null);
 
     // --- Loading State ---
     if (detailsLoading) return (
@@ -57,6 +58,17 @@ function KanjiDetailReplicaFinalLayout() {
         </motion.div>
     );
 
+     // --- Click Handler for Video (Pause/Play/Replay) ---
+     const handleVideoClick = () => {
+        if (videoRef.current) {
+            if (videoRef.current.paused || videoRef.current.ended) { // Play if paused or ended
+                videoRef.current.play();
+            } else {
+                videoRef.current.pause();
+            }
+        }
+    };
+
     // Limit examples to prevent scrolling on the main page
     const limitedExamples = details.examples?.slice(0, 5) || [];
 
@@ -76,12 +88,15 @@ function KanjiDetailReplicaFinalLayout() {
                         {details.strokeMp4Url ? (
                             // Display video if available
                             <video
+                                ref={videoRef}
                                 key={details.strokeMp4Url}
-                                controls
                                 poster={details.strokeSvgUrl || ''} // Use SVG as poster
-                                className="w-full h-auto object-contain rounded border border-gray-200 bg-white shadow-sm max-w-[250px] aspect-square"
+                                className="transition duration-200 hover:border-primary-neon hover:shadow-lg hover:shadow-primary-neon/30 w-full h-auto object-contain rounded border border-gray-200 bg-white shadow-sm max-w-[250px] aspect-square cursor-pointer"
                                 preload="metadata"
                                 aria-label={`Stroke order video for ${details.character}`}
+                                muted 
+                                playsInline 
+                                onClick={handleVideoClick}
                             >
                                 <source src={details.strokeMp4Url} type="video/mp4" />
                                 Your browser does not support the video tag.
@@ -168,7 +183,7 @@ function KanjiDetailReplicaFinalLayout() {
                 <h3 className="text-base font-semibold text-gray-700 mb-3">Stroke Sequence</h3>
                 {details.strokeImages && details.strokeImages.length > 0 ? (
                     // Responsive grid for stroke images
-                    <div className="grid grid-cols-[repeat(auto-fill,minmax(3rem,1fr))] gap-1 p-2 bg-gray-50">
+                    <div className="grid grid-cols-[repeat(auto-fill,minmax(3rem,1fr))] gap-1 p-2">
                         {details.strokeImages.map((imgUrl, index) => (
                             // Wrapper div controls size and overflow
                             <div
