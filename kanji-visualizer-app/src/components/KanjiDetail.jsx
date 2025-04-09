@@ -34,7 +34,7 @@ function KanjiDetailReplicaFinalLayout() {
     // --- Loading State ---
     if (detailsLoading) return (
         <div className="flex flex-col items-center justify-center min-h-[50vh] text-gray-500">
-            <Spinner size="lg" />
+            {/* <Spinner size="lg" /> */}
             <p className="mt-4 text-lg font-sans">Loading Kanji Details...</p>
         </div>
     );

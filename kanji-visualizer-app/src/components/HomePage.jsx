@@ -11,11 +11,11 @@ const toolDescription = `
     through interactive graphs. This tool is designed to be intuitive for young learners beginning
     their Japanese studies and powerful enough for JLPT candidates aiming to master complex characters.
     Build a solid foundation for Japanese literacy with this tool.
-`;
+`; // Note: Removed leading spaces for cleaner rendering if needed
 
 function HomePage() {
     // Link styling (No change)
-    const gradeLinkStyle = "text-sm hover:underline px-4 py-2 rounded transition-colors";
+    const gradeLinkStyle = "text-sm hover:underline px-4 py-2 rounded transition-colors whitespace-nowrap"; // Added whitespace-nowrap to links
 
     return (
         // Centering container
@@ -31,23 +31,27 @@ function HomePage() {
             </h1>
 
             {/* Description */}
-            <p className="text-base md:text-lg max-w-2xl mb-10">
+            {/* --- CHANGE HERE: Increased max-w-2xl to max-w-4xl --- */}
+            <p className="text-base md:text-lg max-w-4xl mb-10">
                 {toolDescription}
             </p>
 
             {/* --- Grade Links Section --- */}
-            {/* Removed border classes, kept padding/gap/width constraints */}
-            <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-4 pt-6 pb-4 w-full max-w-xl">
+            {/* --- CHANGES HERE: Removed flex-wrap, increased max-w-xl to max-w-4xl, removed gap-y-4 --- */}
+            <div className="flex justify-center items-center gap-x-6 pt-6 pb-4 w-full max-w-4xl overflow-x-auto">
                 {/* Label */}
-                <span className="text-base font-semibold mb-1 md:mb-0 mr-4">
+                {/* Added whitespace-nowrap to prevent label wrapping */}
+                <span className="text-base font-semibold mr-4 flex-shrink-0 whitespace-nowrap">
                     Browse by Grade:
                 </span>
-                {/* Grade Links */}
-                {[1, 2, 3, 4, 5, 6].map(grade => (
-                    <Link key={grade} to={`/grade/${grade}`} className={gradeLinkStyle}>
-                        Grade {grade}
-                    </Link>
-                ))}
+                {/* Grade Links Container - Added internal flex container for links */}
+                <div className="flex items-center gap-x-6">
+                     {[1, 2, 3, 4, 5, 6].map(grade => (
+                        <Link key={grade} to={`/grade/${grade}`} className={gradeLinkStyle}>
+                            Grade {grade}
+                        </Link>
+                     ))}
+                </div>
             </div> {/* End Grade Links Section */}
 
         </motion.div> // End Centering Container
