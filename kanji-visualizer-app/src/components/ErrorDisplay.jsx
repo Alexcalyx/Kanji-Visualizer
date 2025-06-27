@@ -1,29 +1,20 @@
-import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
-import { XCircle } from 'lucide-react';
-import { ThemeContext } from '../contexts/ThemeContext'; // Adjust path
+import React from "react";
+import PropTypes from "prop-types";
+import { XCircle } from "lucide-react";
 
 function ErrorDisplay({ message, context }) {
-    const { theme } = useContext(ThemeContext);
-    if (!message) return null;
-
-    return (
-        <div className={`text-center p-6 md:p-8 rounded-lg border-l-4 shadow-lg ${
-            theme === 'light'
-                ? 'bg-secondary/10 border-secondary text-secondary-dark'
-                : 'bg-neon-magenta/10 border-neon-magenta text-neon-magenta' // Use neon magenta
-        }`}>
-            <p className="font-semibold font-heading text-lg flex items-center justify-center gap-2">
-                <XCircle size={20} /> Error {context || 'Loading Data'}:
-            </p>
-            <p className="text-sm mt-2">{message}</p>
-        </div>
-    );
+  return (
+    <div className="flex flex-col items-center justify-center p-6 rounded-lg bg-red-50 border border-red-200 text-red-800">
+      <XCircle className="w-12 h-12 text-red-500 mb-4" />
+      <h3 className="text-lg font-semibold mb-2">Error Loading {context}</h3>
+      <p className="text-center text-red-700">{message}</p>
+    </div>
+  );
 }
 
 ErrorDisplay.propTypes = {
-    message: PropTypes.string,
-    context: PropTypes.string
+  message: PropTypes.string.isRequired,
+  context: PropTypes.string.isRequired,
 };
 
 export default ErrorDisplay;

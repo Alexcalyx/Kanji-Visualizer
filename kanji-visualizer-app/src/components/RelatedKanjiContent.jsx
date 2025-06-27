@@ -1,45 +1,48 @@
 // src/components/RelatedKanjiContent.jsx
-import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { ThemeContext } from '../contexts/ThemeContext'; // Adjust path if needed
+import React from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
-function RelatedKanjiContent({ related = [] }) { // Default related to empty array
-    const { theme } = useContext(ThemeContext);
-
-    // Basic styling for placeholder/content
-    const textStyle = "text-sm text-subtle-light dark:text-subtle-dark italic";
-    const linkStyle = `px-2 py-1 rounded text-sm mr-2 mb-1 inline-block transition-colors ${
-        theme === 'light'
-            ? 'bg-slate-200 hover:bg-slate-300 text-slate-700'
-            : 'bg-slate-700 hover:bg-slate-600 text-slate-200'
-    }`;
-
+function RelatedKanjiContent({ relatedKanji }) {
+  if (!relatedKanji || relatedKanji.length === 0) {
     return (
-        <div className="min-h-[3rem] flex flex-wrap items-start gap-x-2 gap-y-1">
-            {/* Check if related array exists and has items */}
-            {related && related.length > 0 ? (
-                related.map((kanji) => (
-                    <Link
-                        key={kanji}
-                        to={`/kanji/${encodeURIComponent(kanji)}`}
-                        className={linkStyle}
-                    >
-                        {kanji}
-                    </Link>
-                ))
-            ) : (
-                <p className={textStyle}>
-                    (Relationship data source needed or none found)
-                </p>
-            )}
-        </div>
+      <div className="text-center py-8 text-slate-500">
+        No related kanji found.
+      </div>
     );
+  }
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-xl font-semibold text-slate-800 mb-4">
+        Related Kanji
+      </h3>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+        {relatedKanji.map((kanji, index) => (
+          <motion.div
+            key={kanji}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.1 }}
+          >
+            <Link
+              to={`/kanji/${encodeURIComponent(kanji)}`}
+              className="block p-4 text-center bg-white/30 border border-slate-300/50 rounded-lg hover:bg-cyan-50/50 hover:border-cyan-300 transition-colors"
+            >
+              <div className="text-2xl font-display text-slate-800">
+                {kanji}
+              </div>
+            </Link>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 RelatedKanjiContent.propTypes = {
-    related: PropTypes.arrayOf(PropTypes.string),
-    // theme prop removed, using context instead
+  relatedKanji: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default RelatedKanjiContent;
