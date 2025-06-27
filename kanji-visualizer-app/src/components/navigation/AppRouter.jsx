@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from "framer-motion";
 const HomePage = React.lazy(() => import("../../pages/HomePage"));
 const KanjiGrid = React.lazy(() => import("../../pages/KanjiGrid"));
 const KanjiDetail = React.lazy(() => import("../../pages/KanjiDetail"));
+const StudyPage = React.lazy(() => import("../../pages/StudyPage"));
 import { ErrorDisplay, LoadingSpinner } from "../common";
 
 // Wrapper component to get params and pass them to KanjiGrid
@@ -90,6 +91,22 @@ function AppRouter() {
                 transition={pageTransition}
               >
                 <KanjiDetail />
+              </motion.div>
+            }
+          />
+          {/* --- Study Route ('/study') --- */}
+          <Route
+            path="study"
+            element={
+              <motion.div
+                key="study"
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <StudyPage />
               </motion.div>
             }
           />

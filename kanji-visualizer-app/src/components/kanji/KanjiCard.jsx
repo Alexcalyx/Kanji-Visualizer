@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import VanillaTilt from "vanilla-tilt"; // Ensure installed
 import Lottie from "lottie-react";
+import { useStudyProgress } from "../../contexts/StudyProgressContext";
 
 import CheckLottie from "../../assets/animations/checkmark.json"; // Adjust path
 
@@ -34,8 +35,10 @@ function useTilt(options) {
   return ref;
 }
 
-function KanjiCard({ kanji }) {
-  const learned = false; // Default to false since we removed the progress context
+function KanjiCard({ kanji, grade }) {
+  const { getLearnedKanjiForGrade, markLearned, unmarkLearned } =
+    useStudyProgress();
+  const learned = getLearnedKanjiForGrade(grade).includes(kanji);
 
   // Tilt effect configuration
   const tiltRef = useTilt({
@@ -95,8 +98,6 @@ function KanjiCard({ kanji }) {
             className={`absolute -top-1 -right-1 pointer-events-none ${checkmarkBaseSize}`}
             // Adjusted positioning slightly
           >
-            {/* Pass className to Lottie if possible, otherwise wrap it */}
-            {/* If Lottie doesn't accept className, wrap it: */}
             <div className="w-full h-full">
               <Lottie
                 animationData={CheckLottie}
@@ -104,17 +105,37 @@ function KanjiCard({ kanji }) {
                 style={{ width: "100%", height: "100%" }}
               />
             </div>
-            {/* Or if it accepts className: */}
-            {/* <Lottie animationData={CheckLottie} loop={false} className="w-full h-full" /> */}
           </motion.div>
         )}
       </Link>
+      {/* Learned Toggle Button */}
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (learned) {
+            unmarkLearned(kanji, grade);
+          } else {
+            markLearned(kanji, grade);
+          }
+        }}
+        className={`absolute bottom-2 right-2 px-2 py-1 rounded text-xs font-semibold shadow transition-colors z-10
+          ${
+            learned
+              ? "bg-emerald-200 text-emerald-800 hover:bg-emerald-300"
+              : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+          }`}
+        aria-label={learned ? "Unmark as Learned" : "Mark as Learned"}
+      >
+        {learned ? "Unmark as Learned" : "Mark as Learned"}
+      </button>
     </motion.div>
   );
 }
 
 KanjiCard.propTypes = {
   kanji: PropTypes.string.isRequired,
+  grade: PropTypes.string.isRequired,
 };
 
 export default KanjiCard;

@@ -9,6 +9,8 @@ import {
   ErrorDisplay,
   LoadingSpinner,
 } from "../components/common";
+import ProgressIndicator from "../components/common/ProgressIndicator";
+import { useStudyProgress } from "../contexts/StudyProgressContext";
 
 // --- Constants ---
 const ITEMS_PER_PAGE = 40; // Keep items per page manageable
@@ -22,6 +24,8 @@ function KanjiGrid({ grade }) {
   const debounceTimeoutRef = useRef(null);
 
   const { kanjiList, isLoading, error, isFromCache } = useKanjiList(grade);
+  const { getLearnedKanjiForGrade } = useStudyProgress();
+  const learnedCount = getLearnedKanjiForGrade(grade).length;
 
   // --- Debounce Logic ---
   useEffect(() => {
@@ -121,6 +125,9 @@ function KanjiGrid({ grade }) {
   return (
     // Added ref, responsive vertical spacing
     <div ref={gridTopRef} className="space-y-6 md:space-y-8 lg:space-y-10">
+      {/* Progress Indicator */}
+      <ProgressIndicator total={kanjiList.length} learned={learnedCount} />
+
       {/* Title - Responsive Text */}
       <motion.h2
         initial={{ opacity: 0, y: -20 }}
@@ -165,7 +172,7 @@ function KanjiGrid({ grade }) {
           {paginatedKanjiList.map((kanji) => (
             // Removed extra padding div around item, apply padding within item if needed
             <motion.div key={kanji} variants={itemVariants}>
-              <KanjiCard kanji={kanji} />
+              <KanjiCard kanji={kanji} grade={grade} />
             </motion.div>
           ))}
         </motion.div>

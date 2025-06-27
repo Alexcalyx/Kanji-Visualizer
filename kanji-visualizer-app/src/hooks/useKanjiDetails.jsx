@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import useCache from "./useCache";
+import { fetchKanjiDetails } from "../utils/fetchKanjiDetails";
 
 // --- Environment Variables ---
 // Ensure these are correctly set in your .env file
@@ -64,101 +65,13 @@ function useKanjiDetails(character) {
       };
 
       try {
-        const response = await fetch(url, options);
-
-        if (!response.ok) {
-          let errorMsg = `HTTP error ${response.status}`;
-          try {
-            const errorData = await response.json();
-            errorMsg += ` - ${errorData.message || "Unknown API error"}`;
-          } catch (jsonError) {
-            /* Ignore if response body is not JSON */
-          }
-          if (response.status === 404) {
-            errorMsg = `Details not found for Kanji '${decodedChar}'. It might not be covered by the API.`;
-          }
-          throw new Error(errorMsg);
-        }
-
-        const data = await response.json();
-
-        // Check if the primary kanji data exists
-        if (!data || !data.kanji) {
-          console.error(
-            "Unexpected API response format for Kanji details:",
-            data
-          );
-          throw new Error(
-            `Details not found or in unexpected format for Kanji '${decodedChar}' via API.`
-          );
-        }
-
-        // --- Transform data into a more usable structure ---
-        // Includes fields previously missed or assumed unavailable
-        const transformedDetails = {
-          // Core Kanji Info
-          character: data.kanji?.character,
-          meanings: data.kanji?.meaning?.english?.split(", ") || [],
-          strokes: data.kanji?.strokes?.count,
-
-          // Readings
-          readings_on:
-            data.kanji?.onyomi?.katakana
-              ?.split("、")
-              .map((r) => r.trim())
-              .filter(Boolean) || [],
-          readings_kun:
-            data.kanji?.kunyomi?.hiragana
-              ?.split("、")
-              .map((r) => r.trim())
-              .filter(Boolean) || [], // Using hiragana as per API example
-          // Optional: Add romaji if needed
-          // readings_on_romaji: data.kanji?.onyomi?.romaji,
-          // readings_kun_romaji: data.kanji?.kunyomi?.romaji,
-
-          // Radical Info
-          radical: data.radical?.character, // Might be special char
-          radical_image_url: data.radical?.image, // Use this SVG for display
-          radical_strokes: data.radical?.strokes,
-          radical_name: data.radical?.name?.hiragana, // Or romaji: data.radical?.name?.romaji
-          radical_meaning: data.radical?.meaning?.english,
-          radical_position: data.radical?.position?.hiragana, // Or romaji
-
-          // References
-          grade: data.references?.grade,
-          jlpt: data.references?.jlpt, // May not always be present
-          kodansha: data.references?.kodansha,
-          classic_nelson: data.references?.classic_nelson,
-
-          // Examples (including audio links)
-          examples:
-            data.examples?.map((ex, index) => ({
-              id: `${decodedChar}-ex-${index}`, // Generate a unique ID
-              japanese: ex.japanese || "?",
-              meaning: ex.meaning?.english || "?",
-              audio: ex.audio || {}, // Include the full audio object (opus, aac, ogg, mp3)
-            })) || [],
-
-          // Stroke Order / Animation
-          strokeImages: data.kanji?.strokes?.images || [], // Array of SVG URLs for each stroke
-          strokeSvgUrl: data.kanji?.video?.poster, // Static SVG/image poster (usually last frame)
-          strokeMp4Url: data.kanji?.video?.mp4, // Animation video
-          strokeWebmUrl: data.kanji?.video?.webm, // Alternative video format
-
-          // Additional Info from API Root
-          hint: data.mn_hint, // Mnemonic hint (may contain HTML)
-          luminous_url: data.luminous, // URL for Luminous dictionary link
-        };
-
-        // Cache the successful response
+        const transformedDetails = await fetchKanjiDetails(decodedChar);
         setCached(
           "kanji_details",
           decodedChar,
           transformedDetails,
           CACHE_CONFIG.TTL.KANJI_DETAILS
         );
-        console.log(`💾 Cached details for Kanji ${decodedChar}`);
-
         setDetails(transformedDetails);
       } catch (err) {
         if (err.name !== "AbortError") {
