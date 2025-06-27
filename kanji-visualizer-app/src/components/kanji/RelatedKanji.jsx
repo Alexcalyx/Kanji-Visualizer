@@ -1,10 +1,10 @@
-// src/components/RelatedKanjiContent.jsx
+// src/components/kanji/RelatedKanji.jsx
 import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-function RelatedKanjiContent({ relatedKanji }) {
+function RelatedKanji({ relatedKanji }) {
   if (!relatedKanji || relatedKanji.length === 0) {
     return (
       <div className="text-center py-8 text-slate-500">
@@ -41,8 +41,8 @@ function RelatedKanjiContent({ relatedKanji }) {
   );
 }
 
-RelatedKanjiContent.propTypes = {
+RelatedKanji.propTypes = {
   relatedKanji: PropTypes.arrayOf(PropTypes.string),
 };
 
-export default RelatedKanjiContent;
+export default RelatedKanji;

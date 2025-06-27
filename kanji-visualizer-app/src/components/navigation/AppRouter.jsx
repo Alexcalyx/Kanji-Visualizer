@@ -1,16 +1,15 @@
-// src/components/AnimatedRoutes.jsx
+// src/components/layout/AnimatedRoutes.jsx
 import React, { Suspense } from "react";
 import { Routes, Route, useLocation, useParams } from "react-router-dom";
 // Make sure motion and AnimatePresence are imported
 import { AnimatePresence, motion } from "framer-motion";
 
 // --- Lazy load page components ---
-// Ensure paths are correct relative to this file
-const HomePage = React.lazy(() => import("./HomePage"));
-const KanjiGrid = React.lazy(() => import("./KanjiGrid"));
-const KanjiDetail = React.lazy(() => import("./KanjiDetail"));
-const ErrorDisplay = React.lazy(() => import("./ErrorDisplay"));
-import SimpleLoader from "./SimpleLoader"; // Fallback component
+// Updated paths to point to the pages folder
+const HomePage = React.lazy(() => import("../../pages/HomePage"));
+const KanjiGrid = React.lazy(() => import("../../pages/KanjiGrid"));
+const KanjiDetail = React.lazy(() => import("../../pages/KanjiDetail"));
+import { ErrorDisplay, LoadingSpinner } from "../common";
 
 // Wrapper component to get params and pass them to KanjiGrid
 function KanjiGridWrapper() {
@@ -18,7 +17,7 @@ function KanjiGridWrapper() {
   return <KanjiGrid grade={gradeId} />;
 }
 
-function AnimatedRoutes() {
+function AppRouter() {
   const location = useLocation(); // Get location for AnimatePresence key
 
   // --- Animation Settings ---
@@ -39,7 +38,7 @@ function AnimatedRoutes() {
 
   return (
     // Suspense provides fallback while lazy components load
-    <Suspense fallback={<SimpleLoader />}>
+    <Suspense fallback={<LoadingSpinner />}>
       {/* AnimatePresence handles enter/exit animations */}
       {/* 'mode="wait"' ensures exit animation finishes before enter starts */}
       <AnimatePresence mode="wait">
@@ -123,4 +122,4 @@ function AnimatedRoutes() {
   );
 }
 
-export default AnimatedRoutes;
+export default AppRouter;

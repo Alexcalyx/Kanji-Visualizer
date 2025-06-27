@@ -3,11 +3,12 @@ import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search } from "lucide-react"; // Using lucide-react for icons
 import useKanjiList from "../hooks/useKanjiList"; // Adjust path
-import KanjiGridItem from "./KanjiGridItem";
-import PaginationControls from "./PaginationControls"; // Uses updated version
-import LevelSelector from "./LevelSelector";
-import ErrorDisplay from "./ErrorDisplay";
-import SimpleLoader from "./SimpleLoader";
+import { KanjiCard, GradeSelector } from "../components/kanji";
+import {
+  PaginationControls,
+  ErrorDisplay,
+  LoadingSpinner,
+} from "../components/common";
 
 // --- Constants ---
 const ITEMS_PER_PAGE = 40; // Keep items per page manageable
@@ -74,7 +75,7 @@ function KanjiGrid({ grade }) {
   if (isLoading)
     return (
       <div className="flex flex-col items-center justify-center min-h-[40vh]">
-        <SimpleLoader />
+        <LoadingSpinner />
       </div>
     );
 
@@ -144,7 +145,7 @@ function KanjiGrid({ grade }) {
       </motion.p>
 
       {/* Level Selector */}
-      <LevelSelector
+      <GradeSelector
         selectedLevel={selectedLevel}
         onLevelChange={(level) => {
           setSelectedLevel(level);
@@ -174,7 +175,7 @@ function KanjiGrid({ grade }) {
           {paginatedKanjiList.map((kanji) => (
             // Removed extra padding div around item, apply padding within item if needed
             <motion.div key={kanji} variants={itemVariants}>
-              <KanjiGridItem kanji={kanji} />
+              <KanjiCard kanji={kanji} />
             </motion.div>
           ))}
         </motion.div>

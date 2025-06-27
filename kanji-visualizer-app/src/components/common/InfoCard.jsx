@@ -1,9 +1,9 @@
-// src/components/AnimatedInfoCard.jsx
+// src/components/common/InfoCard.jsx
 import React from "react";
 import PropTypes from "prop-types";
 import { motion } from "framer-motion";
 
-function AnimatedInfoCard({ title, children, delay = 0 }) {
+function InfoCard({ title, children, delay = 0 }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -19,10 +19,10 @@ function AnimatedInfoCard({ title, children, delay = 0 }) {
   );
 }
 
-AnimatedInfoCard.propTypes = {
-  title: PropTypes.string,
+InfoCard.propTypes = {
+  title: PropTypes.string.isRequired,
   children: PropTypes.node.isRequired,
   delay: PropTypes.number,
 };
 
-export default AnimatedInfoCard;
+export default InfoCard;

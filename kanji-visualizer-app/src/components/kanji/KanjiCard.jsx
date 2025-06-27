@@ -1,4 +1,4 @@
-// KanjiGridItem.jsx
+// KanjiCard.jsx
 import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import VanillaTilt from "vanilla-tilt"; // Ensure installed
 import Lottie from "lottie-react";
 
-import CheckLottie from "../assets/animations/checkmark.json"; // Adjust path
+import CheckLottie from "../../assets/animations/checkmark.json"; // Adjust path
 
 // Tilt effect hook
 function useTilt(options) {
@@ -34,7 +34,7 @@ function useTilt(options) {
   return ref;
 }
 
-function KanjiGridItem({ kanji }) {
+function KanjiCard({ kanji }) {
   const learned = false; // Default to false since we removed the progress context
 
   // Tilt effect configuration
@@ -113,8 +113,8 @@ function KanjiGridItem({ kanji }) {
   );
 }
 
-KanjiGridItem.propTypes = {
+KanjiCard.propTypes = {
   kanji: PropTypes.string.isRequired,
 };
 
-export default KanjiGridItem;
+export default KanjiCard;

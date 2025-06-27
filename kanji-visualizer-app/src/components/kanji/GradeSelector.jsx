@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-function LevelSelector({ selectedLevel, onLevelChange }) {
+function GradeSelector({ selectedLevel, onLevelChange }) {
   const levels = [
     { value: "all", label: "All Levels" },
     { value: "jlpt-n5", label: "JLPT N5" },
@@ -30,9 +30,9 @@ function LevelSelector({ selectedLevel, onLevelChange }) {
   );
 }
 
-LevelSelector.propTypes = {
+GradeSelector.propTypes = {
   selectedLevel: PropTypes.string.isRequired,
   onLevelChange: PropTypes.func.isRequired,
 };
 
-export default LevelSelector;
+export default GradeSelector;

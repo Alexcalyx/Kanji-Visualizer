@@ -1,9 +1,9 @@
-// src/components/KanjiGraphContent.jsx
+// src/components/kanji/KanjiGraph.jsx
 import React from "react";
 import PropTypes from "prop-types";
 import { motion } from "framer-motion";
 
-function KanjiGraphContent({ kanjiData }) {
+function KanjiGraph({ kanjiData }) {
   if (!kanjiData) {
     return (
       <div className="text-center py-8 text-slate-500">
@@ -30,8 +30,8 @@ function KanjiGraphContent({ kanjiData }) {
   );
 }
 
-KanjiGraphContent.propTypes = {
+KanjiGraph.propTypes = {
   kanjiData: PropTypes.object,
 };
 
-export default KanjiGraphContent;
+export default KanjiGraph;

@@ -1,8 +1,8 @@
-// src/components/Layout.jsx
+// src/components/layout/Layout.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import Footer from "./Footer"; // Adjust path if needed
+import { Footer } from "./"; // Adjust path if needed
 // import ThemeToggleButton from './ThemeToggleButton'; // Optional
 
 // --- Icon Components (Forwarding refs) ---

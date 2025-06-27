@@ -3,8 +3,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // Import Top-Level Layout/Routing Components
-import Layout from "./components/Layout";
-import AnimatedRoutes from "./components/AnimatedRoutes";
+import { Layout, AppRouter } from "./components/navigation";
 
 // --- Main App Component ---
 function App() {
@@ -18,11 +17,11 @@ function App() {
         <Route path="/*" element={<Layout />}>
           {/*
             Nested routes defined within Layout's Outlet
-            are handled by the AnimatedRoutes component.
-            The "*" here ensures AnimatedRoutes receives control
+            are handled by the AppRouter component.
+            The "*" here ensures AppRouter receives control
             for any path matched under Layout.
           */}
-          <Route path="*" element={<AnimatedRoutes />} />
+          <Route path="*" element={<AppRouter />} />
         </Route>
       </Routes>
     </Router>

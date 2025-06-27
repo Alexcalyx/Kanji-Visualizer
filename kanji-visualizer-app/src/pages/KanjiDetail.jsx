@@ -2,9 +2,9 @@ import React, { useRef } from "react";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import useKanjiDetails from "../hooks/useKanjiDetails"; // Adjust path if needed
-// import Spinner from './Spinner';
-import ErrorDisplay from "./ErrorDisplay";
-import ExampleWordListContent from "./ExampleWordListContent"; // Adjust path if needed
+// import { Spinner } from '../components/ui';
+import { ErrorDisplay, LoadingSpinner } from "../components/common";
+import { KanjiExamples } from "../components/kanji";
 
 // Helper component to safely render HTML strings
 const RenderHtml = ({ htmlString }) => {
@@ -191,7 +191,7 @@ function KanjiDetail() {
         {/* On LG, this is the fourth column (lg:col-span-1) */}
         <div className="space-y-2 md:col-span-1 lg:col-span-1">
           <h3 className="text-sm font-semibold text-gray-500 mb-1">Examples</h3>
-          <ExampleWordListContent examples={limitedExamples} />
+          <KanjiExamples examples={limitedExamples} />
         </div>
       </div>{" "}
       {/* End of Main Details Grid */}
