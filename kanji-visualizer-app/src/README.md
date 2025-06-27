@@ -13,7 +13,9 @@ src/
 │   │   ├── LoadingSpinner.jsx    # Full-page loading component
 │   │   ├── ErrorDisplay.jsx      # Error message display
 │   │   ├── InfoCard.jsx          # Animated card container
-│   │   └── PaginationControls.jsx # Pagination interface
+│   │   ├── PaginationControls.jsx # Pagination interface
+│   │   ├── CacheManager.jsx      # Cache management interface
+│   │   └── CacheIndicator.jsx    # Cache status indicator
 │   ├── kanji/                    # Kanji-specific components
 │   │   ├── index.js              # Clean exports for kanji components
 │   │   ├── KanjiCard.jsx         # Individual kanji card
@@ -37,6 +39,7 @@ src/
 │   └── KanjiDetail.jsx           # Individual kanji details
 ├── hooks/                        # Custom React hooks
 │   ├── useAnimateInView.jsx      # Animation on scroll hook
+│   ├── useCache.jsx              # Caching system hook
 │   ├── useKanjiDetails.jsx       # Kanji data fetching hook
 │   ├── useKanjiList.jsx          # Kanji list fetching hook
 │   └── useTilt.jsx               # Tilt effect hook
@@ -63,6 +66,8 @@ Reusable UI components that can be used throughout the application:
 - **ErrorDisplay**: Error message display with context
 - **InfoCard**: Animated card container
 - **PaginationControls**: Pagination interface
+- **CacheManager**: Cache management interface with statistics
+- **CacheIndicator**: Visual indicator for cached data
 
 ### Kanji Components (`components/kanji/`)
 
@@ -94,13 +99,69 @@ Top-level page components:
 - **KanjiGrid**: Kanji grid display with search and pagination
 - **KanjiDetail**: Individual kanji details page
 
+## 🗄️ Caching System
+
+The app implements a sophisticated caching system to improve performance and reduce API calls:
+
+### **Cache Architecture**
+
+- **In-Memory Cache**: Fast access for current session data
+- **LocalStorage Cache**: Persistent storage across browser sessions
+- **TTL (Time-To-Live)**: Automatic cache expiration
+- **Graceful Fallback**: Falls back to API when cache fails
+
+### **Cache Configuration**
+
+```javascript
+const CACHE_CONFIG = {
+  TTL: {
+    KANJI_LIST: 24 * 60 * 60 * 1000, // 24 hours
+    KANJI_DETAILS: 7 * 24 * 60 * 60 * 1000, // 7 days
+  },
+};
+```
+
+### **Cache Features**
+
+1. **Smart Data Fetching**: Checks cache before making API calls
+2. **Cache Indicators**: Visual indicators show when data is loaded from cache
+3. **Cache Management**: Users can view cache stats and clear cache
+4. **Automatic Cleanup**: Expired cache entries are automatically removed
+5. **Error Handling**: Graceful handling of cache failures
+
+### **Cache Manager Interface**
+
+- **Floating Button**: Blue info button in bottom-right corner
+- **Cache Statistics**: Shows memory and storage cache sizes
+- **TTL Information**: Displays cache duration for different data types
+- **Manual Controls**: Refresh stats and clear all cache
+- **Real-time Updates**: Stats update automatically every 5 seconds
+
+### **Cache Indicators**
+
+- **Green "Cached" Badge**: Appears when data is loaded from cache
+- **Database Icon**: Visual indicator for cached data
+- **Smooth Animations**: Fade-in/out animations for indicators
+
+### **Performance Benefits**
+
+- **Faster Loading**: Cached data loads instantly
+- **Reduced API Calls**: Significantly fewer requests to external APIs
+- **Offline Capability**: Basic functionality works without internet
+- **Bandwidth Savings**: Reduced data usage for repeat visits
+- **Better UX**: Smoother user experience with instant data access
+
 ## 📦 Import Patterns
 
 ### Clean Imports Using Index Files
 
 ```javascript
 // Import from common components
-import { LoadingSpinner, ErrorDisplay } from "../components/common";
+import {
+  LoadingSpinner,
+  ErrorDisplay,
+  CacheManager,
+} from "../components/common";
 
 // Import from kanji components
 import { KanjiCard, GradeSelector } from "../components/kanji";
@@ -120,6 +181,7 @@ import KanjiCard from "../components/kanji/KanjiCard";
 
 // Direct hook import
 import useKanjiDetails from "../hooks/useKanjiDetails";
+import useCache from "../hooks/useCache";
 ```
 
 ## 🎯 Benefits of This Structure
@@ -129,8 +191,9 @@ import useKanjiDetails from "../hooks/useKanjiDetails";
 3. **Reusability**: Common components are easily accessible across the app
 4. **Clean Imports**: Index files provide clean, semantic import paths
 5. **Developer Experience**: Intuitive folder structure makes it easy to find components
-6. **Performance**: Lazy loading and code splitting are easier to implement
+6. **Performance**: Lazy loading, code splitting, and intelligent caching
+7. **User Experience**: Fast loading times and offline capability
 
 ## 🔄 Migration Notes
 
-This structure was refactored from a flat components folder to improve organization and maintainability. All imports have been updated to use the new folder structure and component names.
+This structure was refactored from a flat components folder to improve organization and maintainability. All imports have been updated to use the new folder structure and component names. The caching system was added to improve performance and reduce API dependency.

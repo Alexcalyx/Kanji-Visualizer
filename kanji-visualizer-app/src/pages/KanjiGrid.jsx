@@ -21,7 +21,7 @@ function KanjiGrid({ grade }) {
   const gridTopRef = useRef(null);
   const debounceTimeoutRef = useRef(null);
 
-  const { kanjiList, isLoading, error } = useKanjiList(grade);
+  const { kanjiList, isLoading, error, isFromCache } = useKanjiList(grade);
 
   // --- Debounce Logic ---
   useEffect(() => {
@@ -132,7 +132,7 @@ function KanjiGrid({ grade }) {
         Kanji List
       </motion.h2>
 
-      {/* Grade Description - Responsive Text */}
+      {/* Grade Description */}
       <motion.p
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}

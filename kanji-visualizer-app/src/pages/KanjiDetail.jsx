@@ -29,6 +29,7 @@ function KanjiDetail() {
     details,
     isLoading: detailsLoading,
     error: detailsError,
+    isFromCache,
   } = useKanjiDetails(character);
   const videoRef = useRef(null);
 

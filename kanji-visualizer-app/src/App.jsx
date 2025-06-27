@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // Import Top-Level Layout/Routing Components
 import { Layout, AppRouter } from "./components/navigation";
+import { CacheManager } from "./components/common";
 
 // --- Main App Component ---
 function App() {
@@ -24,6 +25,9 @@ function App() {
           <Route path="*" element={<AppRouter />} />
         </Route>
       </Routes>
+
+      {/* Cache Manager - Available on all pages */}
+      <CacheManager />
     </Router>
   );
 }
