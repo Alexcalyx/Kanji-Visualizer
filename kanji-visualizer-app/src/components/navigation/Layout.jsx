@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Footer } from "./"; // Adjust path if needed
+import AppRouter from "./AppRouter"; // Import AppRouter
 // import ThemeToggleButton from './ThemeToggleButton'; // Optional
 
 // --- Icon Components (Forwarding refs) ---
@@ -259,7 +260,7 @@ function Layout() {
 
       {/* Main Content Area */}
       <main className="container mx-auto p-4 py-6 md:p-6 md:py-8 relative z-10 flex-grow">
-        <Outlet /> {/* Where child routes are rendered */}
+        <AppRouter />
       </main>
 
       {/* Footer Component */}
