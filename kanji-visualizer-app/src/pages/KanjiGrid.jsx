@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search } from "lucide-react"; // Using lucide-react for icons
 import useKanjiList from "../hooks/useKanjiList"; // Adjust path
-import { KanjiCard, GradeSelector } from "../components/kanji";
+import { KanjiCard } from "../components/kanji";
 import {
   PaginationControls,
   ErrorDisplay,
@@ -16,7 +16,6 @@ const ITEMS_PER_PAGE = 40; // Keep items per page manageable
 function KanjiGrid({ grade }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedLevel, setSelectedLevel] = useState("all");
   const [inputValue, setInputValue] = useState("");
   const searchInputRef = useRef(null);
   const gridTopRef = useRef(null);
@@ -143,15 +142,6 @@ function KanjiGrid({ grade }) {
       >
         {getGradeDescription(grade)}
       </motion.p>
-
-      {/* Level Selector */}
-      <GradeSelector
-        selectedLevel={selectedLevel}
-        onLevelChange={(level) => {
-          setSelectedLevel(level);
-          setCurrentPage(1);
-        }}
-      />
 
       {/* Pagination Controls (Top) - Assuming it's responsive */}
       {totalPages > 1 && ( // Only show if more than one page
