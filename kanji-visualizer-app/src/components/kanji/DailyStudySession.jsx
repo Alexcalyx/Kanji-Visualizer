@@ -52,8 +52,8 @@ function Quiz({ kanji, meaning, readings, onResult }) {
           <button
             key={opt}
             className={`px-4 py-2 rounded border ${
-              selected === opt ? "bg-cyan-200" : "bg-white"
-            } hover:bg-cyan-100`}
+              selected === opt ? "bg-purple-200" : "bg-white"
+            } hover:bg-purple-100`}
             onClick={() => setSelected(opt)}
             disabled={selected !== null}
           >
@@ -71,7 +71,7 @@ function Quiz({ kanji, meaning, readings, onResult }) {
             </span>
           )}
           <button
-            className="ml-4 px-3 py-1 bg-cyan-600 text-white rounded"
+            className="ml-4 px-3 py-1 bg-purple-500 text-white rounded"
             onClick={() => onResult(selected === meaning)}
           >
             Next
@@ -94,8 +94,8 @@ function TabSection({ kanji, data }) {
             key={t}
             className={`px-4 py-2 font-semibold transition-colors border-b-2 -mb-px ${
               tab === t
-                ? "border-cyan-500 text-cyan-700 bg-cyan-50"
-                : "border-transparent text-slate-500 hover:text-cyan-600"
+                ? "border-purple-500 text-purple-700 bg-purple-50"
+                : "border-transparent text-slate-500 hover:text-purple-600"
             }`}
             onClick={() => setTab(t)}
           >
@@ -106,7 +106,7 @@ function TabSection({ kanji, data }) {
       {/* Tab Content */}
       {tab === "Breakdown" && (
         <div className="py-2">
-          <h3 className="text-lg font-semibold mb-2 text-cyan-700">
+          <h3 className="text-lg font-semibold mb-2 text-purple-700">
             Breakdown
           </h3>
           <div className="flex flex-col items-center gap-2">
@@ -140,7 +140,9 @@ function TabSection({ kanji, data }) {
       )}
       {tab === "Meaning" && (
         <div className="py-2">
-          <h3 className="text-lg font-semibold mb-2 text-cyan-700">Meaning</h3>
+          <h3 className="text-lg font-semibold mb-2 text-purple-700">
+            Meaning
+          </h3>
           <div className="text-xl mb-1">
             {(data.meanings || []).join(", ") || "[meaning]"}
           </div>
@@ -161,7 +163,7 @@ function TabSection({ kanji, data }) {
             Reading
           </h3>
           <div className="mb-2">
-            <span className="font-semibold text-cyan-700">On'yomi:</span>
+            <span className="font-semibold text-purple-700">On'yomi:</span>
             <span className="ml-2">
               {(data.readings_on || []).join("、 ") || "[none]"}
             </span>
@@ -196,7 +198,7 @@ function TabSection({ kanji, data }) {
                     ex.audio.aac ||
                     ex.audio.opus) && (
                     <button
-                      className="px-2 py-1 bg-cyan-100 rounded text-cyan-700"
+                      className="px-2 py-1 bg-purple-100 rounded text-purple-700"
                       onClick={() => playAudio(ex.audio)}
                     >
                       ▶️
@@ -257,7 +259,7 @@ function DailyStudySession({
       <div className="text-center p-8">
         <ConfettiBurst trigger={true} />
         <h2 className="text-2xl font-bold mb-4">Session Complete!</h2>
-        <div className="mb-4 text-lg font-semibold text-cyan-700">
+        <div className="mb-4 text-lg font-semibold text-purple-700">
           {encouragement}
         </div>
         <div className="mb-4">You studied {total} kanji today.</div>
@@ -295,7 +297,7 @@ function DailyStudySession({
         </div>
         {missed.length > 0 && (
           <button
-            className="mb-4 px-4 py-2 bg-orange-500 text-white rounded font-semibold"
+            className="mb-4 px-4 py-2 bg-purple-500 text-white rounded font-semibold"
             onClick={() => {
               setReviewMode(true);
               setReviewKanji(missed);
@@ -308,7 +310,7 @@ function DailyStudySession({
           </button>
         )}
         <button
-          className="px-6 py-2 bg-cyan-600 text-white rounded font-semibold"
+          className="px-6 py-2 bg-purple-500 text-white rounded font-semibold"
           onClick={onComplete}
         >
           Finish
@@ -325,7 +327,7 @@ function DailyStudySession({
         <h2 className="text-2xl font-bold mb-4">Review Complete!</h2>
         <div className="mb-4">You've reviewed all missed kanji.</div>
         <button
-          className="px-6 py-2 bg-cyan-600 text-white rounded font-semibold"
+          className="px-6 py-2 bg-purple-500 text-white rounded font-semibold"
           onClick={onComplete}
         >
           Finish
@@ -360,7 +362,7 @@ function DailyStudySession({
         </div>
         <div className="w-full bg-slate-200 rounded-full h-2">
           <div
-            className="bg-cyan-500 h-2 rounded-full transition-all"
+            className="bg-purple-500 h-2 rounded-full transition-all"
             style={{
               width: `${
                 ((displayCurrentIdx + step / 4) / displayTotal) * 100
@@ -386,7 +388,7 @@ function DailyStudySession({
           {/* Actions */}
           <div className="flex flex-col gap-2 mt-4">
             <button
-              className="px-4 py-2 bg-cyan-600 text-white rounded font-semibold"
+              className="px-4 py-2 bg-purple-500 text-white rounded font-semibold"
               onClick={goNextStep}
             >
               Next
@@ -402,7 +404,7 @@ function DailyStudySession({
             strokeSvgUrl={displayCurrentData.strokeSvgUrl}
           />
           <button
-            className="mt-4 px-4 py-2 bg-cyan-600 text-white rounded"
+            className="mt-4 px-4 py-2 bg-purple-500 text-white rounded"
             onClick={goNextStep}
           >
             Next
@@ -433,7 +435,7 @@ function DailyStudySession({
       {step === 3 && (
         <div className="text-center">
           <button
-            className="px-4 py-2 bg-emerald-600 text-white rounded font-semibold mr-4"
+            className="px-4 py-2 bg-purple-500 text-white rounded font-semibold mr-4"
             onClick={() => {
               onMarkLearned(displayCurrentKanji);
               goNextKanji();

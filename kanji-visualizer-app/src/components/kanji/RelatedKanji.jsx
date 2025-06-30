@@ -28,7 +28,7 @@ function RelatedKanji({ relatedKanji }) {
           >
             <Link
               to={`/kanji/${encodeURIComponent(kanji)}`}
-              className="block p-4 text-center bg-white/30 border border-slate-300/50 rounded-lg hover:bg-cyan-50/50 hover:border-cyan-300 transition-colors"
+              className="block p-4 text-center bg-white/30 border border-slate-300/50 rounded-lg hover:bg-purple-50/50 hover:border-purple-300 transition-colors"
             >
               <div className="text-2xl font-display text-slate-800">
                 {kanji}

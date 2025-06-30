@@ -71,17 +71,17 @@ function Layout() {
   const navLinkBase =
     "text-sm sm:text-base font-heading transition-colors duration-200 px-2 py-1 rounded-md whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-primary-neon focus:ring-offset-2";
   // Default link styles per theme, adding appropriate focus offset color
-  const navLinkDefaultLight = `text-slate-600 hover:text-primary-neon hover:bg-cyan-500/10 ${navLinkBase} focus:ring-offset-white`;
+  const navLinkDefaultLight = `text-slate-600 hover:text-primary-neon hover:bg-purple-500/10 ${navLinkBase} focus:ring-offset-white`;
   // Active link styles per theme, adjusting focus offset color based on active bg
-  const navLinkActiveLight = `bg-cyan-100 text-primary-dark font-semibold ${navLinkBase} focus:ring-offset-cyan-100`;
+  const navLinkActiveLight = `bg-purple-100 text-primary-dark font-semibold ${navLinkBase} focus:ring-offset-purple-100`;
 
   // --- Mobile Overlay Link Styles (Enhanced) ---
   // Base styles including rounded corners, left border, and focus ring
   const mobileNavLinkBaseStyle = `block text-lg font-heading px-4 py-3 rounded-lg w-full text-left transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-neon border-l-4`;
   // Default mobile link styles per theme, with transparent border and theme-based focus offset
-  const mobileNavLinkDefaultLight = `${mobileNavLinkBaseStyle} text-slate-700 border-transparent hover:bg-cyan-500/10 hover:text-primary-dark focus:ring-offset-white`;
+  const mobileNavLinkDefaultLight = `${mobileNavLinkBaseStyle} text-slate-700 border-transparent hover:bg-purple-500/10 hover:text-primary-dark focus:ring-offset-white`;
   // Active mobile link styles per theme, with colored border, background, and adjusted focus offset
-  const mobileNavLinkActiveLight = `${mobileNavLinkBaseStyle} bg-cyan-100 text-primary-dark font-semibold border-primary-neon focus:ring-offset-cyan-100`;
+  const mobileNavLinkActiveLight = `${mobileNavLinkBaseStyle} bg-purple-100 text-primary-dark font-semibold border-primary-neon focus:ring-offset-purple-100`;
 
   // --- Body Scroll Lock & Anti-Shift ---
   useEffect(() => {

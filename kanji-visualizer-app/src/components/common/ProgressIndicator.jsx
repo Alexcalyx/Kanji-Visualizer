@@ -13,7 +13,7 @@ function ProgressIndicator({ total, learned }) {
       </div>
       <div className="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
         <div
-          className="bg-cyan-500 h-3 rounded-full transition-all"
+          className="bg-purple-500 h-3 rounded-full transition-all"
           style={{ width: `${percent}%` }}
         />
       </div>

@@ -51,7 +51,7 @@ function PaginationControls({ currentPage, totalPages, onPageChange }) {
         className={`p-2 rounded-lg transition-colors ${
           currentPage === 1
             ? "text-gray-400 cursor-not-allowed"
-            : "text-slate-600 hover:text-primary-neon hover:bg-cyan-500/10"
+            : "text-slate-600 hover:text-primary-neon hover:bg-purple-500/10"
         }`}
       >
         <ChevronLeft className="w-5 h-5" />
@@ -70,8 +70,8 @@ function PaginationControls({ currentPage, totalPages, onPageChange }) {
                 onClick={() => onPageChange(page)}
                 className={`px-3 py-2 rounded-lg transition-colors ${
                   currentPage === page
-                    ? "bg-cyan-100 text-primary-dark font-semibold"
-                    : "text-slate-600 hover:text-primary-neon hover:bg-cyan-500/10"
+                    ? "bg-purple-100 text-primary-dark font-semibold"
+                    : "text-slate-600 hover:text-primary-neon hover:bg-purple-500/10"
                 }`}
               >
                 {page}
@@ -90,7 +90,7 @@ function PaginationControls({ currentPage, totalPages, onPageChange }) {
         className={`p-2 rounded-lg transition-colors ${
           currentPage === totalPages
             ? "text-gray-400 cursor-not-allowed"
-            : "text-slate-600 hover:text-primary-neon hover:bg-cyan-500/10"
+            : "text-slate-600 hover:text-primary-neon hover:bg-purple-500/10"
         }`}
       >
         <ChevronRight className="w-5 h-5" />

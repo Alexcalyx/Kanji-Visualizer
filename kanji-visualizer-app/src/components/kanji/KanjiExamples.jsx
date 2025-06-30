@@ -40,7 +40,7 @@ function KanjiExamples({ examples = [] }) {
                   </span>
                   <button
                     onClick={() => handlePlayAudio(ex.audio)}
-                    className="cursor-pointer text-gray-400 hover:text-blue-600 text-lg leading-none px-2 py-0 flex-shrink-0"
+                    className="cursor-pointer text-gray-400 hover:text-purple-600 text-lg leading-none px-2 py-0 flex-shrink-0"
                     aria-label={`Play audio for ${ex.japanese}`}
                     title="Play audio"
                   >

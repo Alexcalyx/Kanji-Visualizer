@@ -154,7 +154,7 @@ function StudyPage() {
             />
           ) : (
             <button
-              className="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded font-semibold"
+              className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded font-semibold"
               onClick={startSession}
             >
               Start Daily Study
@@ -166,7 +166,7 @@ function StudyPage() {
       <section className="bg-white/70 rounded-xl shadow p-6">
         <h2 className="text-2xl font-semibold mb-4">Revision Mode</h2>
         <div className="flex flex-col gap-4">
-          <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-semibold">
+          <button className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded font-semibold">
             Quiz: Guess Kanji from Meaning/Reading
           </button>
           <button className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded font-semibold">

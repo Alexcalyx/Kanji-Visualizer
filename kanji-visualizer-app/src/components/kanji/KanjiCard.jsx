@@ -58,7 +58,7 @@ function KanjiCard({ kanji, grade }) {
   const themeStyle =
     "bg-white/30 border-slate-300/50 hover:bg-sky-50/50 hover:border-sky-300";
 
-  const learnedStyle = "!bg-emerald-100/50 !border-emerald-400";
+  const learnedStyle = "!bg-purple-100/50 !border-purple-400";
 
   // Adjusted checkmark size using Tailwind classes for responsiveness
   const checkmarkBaseSize = "w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7"; // Responsive size classes
@@ -76,7 +76,7 @@ function KanjiCard({ kanji, grade }) {
           className={`transition-transform duration-150 ease-in-out group-hover:scale-110 font-display leading-none
                             text-3xl sm:text-4xl md:text-5xl lg:text-6xl ${
                               /* Text color logic */ learned
-                                ? "text-emerald-700"
+                                ? "text-purple-700"
                                 : "text-slate-800"
                             }`}
         >
@@ -122,7 +122,7 @@ function KanjiCard({ kanji, grade }) {
         className={`absolute bottom-2 right-2 px-2 py-1 rounded text-xs font-semibold shadow transition-colors z-10
           ${
             learned
-              ? "bg-emerald-200 text-emerald-800 hover:bg-emerald-300"
+              ? "bg-purple-200 text-purple-800 hover:bg-purple-300"
               : "bg-slate-200 text-slate-700 hover:bg-slate-300"
           }`}
         aria-label={learned ? "Unmark as Learned" : "Mark as Learned"}

@@ -42,7 +42,7 @@ function HomePage() {
       {/* Study Center Button */}
       <Link
         to="/study"
-        className="inline-block mb-6 px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white text-lg font-bold rounded-lg shadow transition-colors"
+        className="inline-block mb-6 px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white text-lg font-bold rounded-lg shadow transition-colors"
       >
         Go to Study Center
       </Link>

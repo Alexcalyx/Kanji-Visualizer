@@ -19,8 +19,8 @@ function GradeSelector({ selectedLevel, onLevelChange }) {
           onClick={() => onLevelChange(level.value)}
           className={`px-4 py-2 rounded-lg transition-colors text-sm font-medium ${
             selectedLevel === level.value
-              ? "bg-cyan-100 text-primary-dark font-semibold"
-              : "text-slate-600 hover:text-primary-neon hover:bg-cyan-500/10"
+              ? "bg-purple-100 text-primary-dark font-semibold"
+              : "text-slate-600 hover:text-primary-neon hover:bg-purple-500/10"
           }`}
         >
           {level.label}
