@@ -82,137 +82,6 @@ function Quiz({ kanji, meaning, readings, onResult }) {
   );
 }
 
-function TabSection({ kanji, data }) {
-  const [tab, setTab] = React.useState("Breakdown");
-  const tabs = ["Breakdown", "Meaning", "Reading", "Examples"];
-  return (
-    <div>
-      {/* Tab Bar */}
-      <div className="flex border-b border-slate-200 mb-4">
-        {tabs.map((t) => (
-          <button
-            key={t}
-            className={`px-4 py-2 font-semibold transition-colors border-b-2 -mb-px ${
-              tab === t
-                ? "border-purple-500 text-purple-700 bg-purple-50"
-                : "border-transparent text-slate-500 hover:text-purple-600"
-            }`}
-            onClick={() => setTab(t)}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
-      {/* Tab Content */}
-      {tab === "Breakdown" && (
-        <div className="py-2">
-          <h3 className="text-lg font-semibold mb-2 text-purple-700">
-            Breakdown
-          </h3>
-          <div className="flex flex-col items-center gap-2">
-            <StrokeOrder
-              kanji={kanji}
-              strokeMp4Url={data.strokeMp4Url}
-              strokeSvgUrl={data.strokeSvgUrl}
-            />
-            {data.strokeImages && data.strokeImages.length > 0 && (
-              <div className="flex flex-wrap gap-1 mt-2">
-                {data.strokeImages.map((imgUrl, idx) => (
-                  <img
-                    key={idx}
-                    src={imgUrl}
-                    alt={`Stroke ${idx + 1}`}
-                    className="h-10 w-10 border bg-white rounded shadow-sm"
-                    loading="lazy"
-                  />
-                ))}
-              </div>
-            )}
-            {/* Add radical info if available */}
-            {data.radical && (
-              <div className="mt-2 text-base text-slate-700">
-                <span className="font-semibold">Radical:</span> {data.radical}{" "}
-                {data.radical_meaning && `(${data.radical_meaning})`}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-      {tab === "Meaning" && (
-        <div className="py-2">
-          <h3 className="text-lg font-semibold mb-2 text-purple-700">
-            Meaning
-          </h3>
-          <div className="text-xl mb-1">
-            {(data.meanings || []).join(", ") || "[meaning]"}
-          </div>
-          {data.hint && (
-            <div className="mt-2 bg-yellow-50 border-l-4 border-yellow-300 p-2 rounded">
-              <span className="font-semibold text-yellow-700">Hint:</span>
-              <span
-                className="ml-2"
-                dangerouslySetInnerHTML={{ __html: data.hint }}
-              />
-            </div>
-          )}
-        </div>
-      )}
-      {tab === "Reading" && (
-        <div className="py-2">
-          <h3 className="text-lg font-semibold mb-2 text-purple-700">
-            Reading
-          </h3>
-          <div className="mb-2">
-            <span className="font-semibold text-purple-700">On'yomi:</span>
-            <span className="ml-2">
-              {(data.readings_on || []).join("、 ") || "[none]"}
-            </span>
-          </div>
-          <div className="mb-2">
-            <span className="font-semibold text-purple-700">Kun'yomi:</span>
-            <span className="ml-2">
-              {(data.readings_kun || []).join("、 ") || "[none]"}
-            </span>
-          </div>
-          {/* Add reading explanation if available in the future */}
-        </div>
-      )}
-      {tab === "Examples" && (
-        <div className="py-2">
-          <h3 className="text-lg font-semibold mb-2 text-emerald-700">
-            Examples
-          </h3>
-          <div className="max-h-32 overflow-y-auto mt-1 space-y-1">
-            {(data.examples || []).length === 0 && (
-              <div className="text-slate-400 italic">
-                No examples available.
-              </div>
-            )}
-            {(data.examples || []).map((ex) => (
-              <div key={ex.id} className="flex items-center gap-2 text-base">
-                <span>{ex.japanese}</span>
-                <span className="text-slate-500 text-sm">{ex.meaning}</span>
-                {ex.audio &&
-                  (ex.audio.mp3 ||
-                    ex.audio.ogg ||
-                    ex.audio.aac ||
-                    ex.audio.opus) && (
-                    <button
-                      className="px-2 py-1 bg-purple-100 rounded text-purple-700"
-                      onClick={() => playAudio(ex.audio)}
-                    >
-                      ▶️
-                    </button>
-                  )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
 function DailyStudySession({
   kanjiList,
   kanjiDataList,
@@ -227,6 +96,7 @@ function DailyStudySession({
   const [showConfetti, setShowConfetti] = useState(false);
   const [reviewMode, setReviewMode] = useState(false);
   const [reviewKanji, setReviewKanji] = useState([]);
+  const [tab, setTab] = useState("Breakdown"); // Tab state for the new layout
 
   const total = kanjiList.length;
   const currentKanji = kanjiList[currentIdx];
@@ -247,7 +117,7 @@ function DailyStudySession({
     "Fantastic work!",
     "You did it!",
     "Impressive!",
-    "Keep up the streak!",
+    "Excellent work!",
   ];
 
   if (currentIdx >= total && !reviewMode) {
@@ -351,7 +221,7 @@ function DailyStudySession({
   const readingsKun = displayCurrentData.readings_kun || [];
 
   return (
-    <div className="max-w-lg mx-auto p-4 bg-white/80 rounded-xl shadow">
+    <div className="max-w-4xl mx-auto p-4 bg-white/80 rounded-xl shadow">
       {/* Progress Bar */}
       <div className="mb-4">
         <div className="flex justify-between text-sm mb-1">
@@ -374,25 +244,185 @@ function DailyStudySession({
 
       {/* Step Content */}
       {step === 0 && (
-        <div className="w-full max-w-xl mx-auto bg-white/90 rounded-xl shadow-lg p-4 md:p-8 flex flex-col gap-6">
-          {/* Main Kanji Display */}
-          <div className="flex flex-col items-center gap-2 mb-2">
-            <div className="text-8xl font-bold mb-2 mt-2 md:mt-0">
+        <div className="w-full max-w-3xl mx-auto p-4 md:p-8 flex flex-col md:flex-row gap-6 h-[600px] md:h-[600px]">
+          {/* Left: Kanji Image and Info */}
+          <div className="flex flex-col w-full md:w-[30%] md:flex-shrink-0 px-2 py-4 gap-6 items-start">
+            {/* Large Kanji Character */}
+            <div className="text-9xl font-bold text-slate-800 mb-2">
               {displayCurrentKanji}
+            </div>
+            {/* Meaning Section */}
+            <div className="flex flex-col gap-1 w-full">
+              <div className="text-xs font-semibold text-purple-600 uppercase tracking-wide">
+                Meaning
+              </div>
+              <div className="text-2xl font-bold text-slate-800">
+                {(displayCurrentData.meanings || []).join(", ") || "[meaning]"}
+              </div>
+            </div>
+            {/* Radical Section with Hint */}
+            {displayCurrentData.radical && (
+              <div className="flex flex-col gap-1 w-full">
+                <div className="text-xs font-semibold text-purple-600 uppercase tracking-wide">
+                  Radical
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xl font-bold text-black">
+                    {displayCurrentData.radical}
+                  </span>
+                  <span className="text-sm text-black">
+                    {displayCurrentData.radical_meaning || "Radical"}
+                  </span>
+                </div>
+                {displayCurrentData.hint && (
+                  <div className="flex mt-1">
+                    <div className="border-l-4 border-purple-300 mr-3" />
+                    <div>
+                      <span className="block text-xs font-semibold text-purple-700 uppercase mb-0.5">
+                        Hint
+                      </span>
+                      <span
+                        className="text-black"
+                        dangerouslySetInnerHTML={{
+                          __html: displayCurrentData.hint,
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            {/* Reading Section */}
+            <div className="flex flex-col gap-1 w-full">
+              <div className="text-xs font-semibold text-purple-600 uppercase tracking-wide">
+                Reading
+              </div>
+              <div className="flex mt-1">
+                <div className="border-l-4 border-purple-300 mr-3" />
+                <div className="flex flex-col gap-1">
+                  <div className="flex gap-2 items-baseline">
+                    <span className="text-xs font-semibold text-purple-600 uppercase">
+                      On'yomi
+                    </span>
+                    <span className="text-lg font-bold text-black">
+                      {(displayCurrentData.readings_on || []).join("、 ") ||
+                        "[none]"}
+                    </span>
+                  </div>
+                  <div className="flex gap-2 items-baseline">
+                    <span className="text-xs font-semibold text-purple-600 uppercase">
+                      Kun'yomi
+                    </span>
+                    <span className="text-lg font-bold text-black">
+                      {(displayCurrentData.readings_kun || []).join("、 ") ||
+                        "[none]"}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Tab Bar */}
-          <TabSection kanji={displayCurrentKanji} data={displayCurrentData} />
+          {/* Right: Tab Bar and Tab Content */}
+          <div className="flex flex-col flex-1 w-full md:w-[70%] h-full">
+            {/* Row 1: Tab Names - Fixed */}
+            <div className="flex-shrink-0 h-12 border-b border-slate-200">
+              <div className="flex h-full">
+                {["Breakdown", "Examples"].map((t) => (
+                  <button
+                    key={t}
+                    className={`px-4 py-2 font-semibold transition-colors border-b-2 -mb-px ${
+                      t === tab
+                        ? "border-purple-500 text-purple-700 bg-purple-50"
+                        : "border-transparent text-slate-500 hover:text-purple-600"
+                    }`}
+                    onClick={() => setTab(t)}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-          {/* Actions */}
-          <div className="flex flex-col gap-2 mt-4">
-            <button
-              className="px-4 py-2 bg-purple-500 text-white rounded font-semibold"
-              onClick={goNextStep}
-            >
-              Next
-            </button>
+            {/* Row 2: Scrollable Content - Fixed height, scrollable */}
+            <div className="flex-1 min-h-0 overflow-y-auto pr-1">
+              {tab === "Breakdown" && (
+                <div className="py-4">
+                  <div className="flex flex-col items-center gap-2">
+                    <StrokeOrder
+                      kanji={displayCurrentKanji}
+                      strokeMp4Url={displayCurrentData.strokeMp4Url}
+                      strokeSvgUrl={displayCurrentData.strokeSvgUrl}
+                    />
+                    {displayCurrentData.strokeImages &&
+                      displayCurrentData.strokeImages.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {displayCurrentData.strokeImages.map(
+                            (imgUrl, idx) => (
+                              <img
+                                key={idx}
+                                src={imgUrl}
+                                alt={`Stroke ${idx + 1}`}
+                                className="h-10 w-10 border bg-white rounded shadow-sm"
+                                loading="lazy"
+                              />
+                            )
+                          )}
+                        </div>
+                      )}
+                  </div>
+                </div>
+              )}
+              {tab === "Examples" && (
+                <div className="py-4">
+                  <div className="space-y-3">
+                    {(displayCurrentData.examples || []).length === 0 && (
+                      <div className="text-slate-400 italic text-center py-4">
+                        No examples available.
+                      </div>
+                    )}
+                    {(displayCurrentData.examples || []).map((ex) => (
+                      <div
+                        key={ex.id}
+                        className="bg-slate-50 rounded-lg p-3 border border-slate-200"
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-lg font-medium text-slate-800">
+                            {ex.japanese}
+                          </span>
+                          {ex.audio &&
+                            (ex.audio.mp3 ||
+                              ex.audio.ogg ||
+                              ex.audio.aac ||
+                              ex.audio.opus) && (
+                              <button
+                                className="px-2 py-1 bg-purple-100 rounded text-purple-700 hover:bg-purple-200 transition-colors"
+                                onClick={() => playAudio(ex.audio)}
+                                aria-label={`Play audio for ${ex.japanese}`}
+                              >
+                                ▶️
+                              </button>
+                            )}
+                        </div>
+                        <p className="text-sm text-slate-600 italic">
+                          {ex.meaning}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Row 3: Next Button - Fixed at bottom */}
+            <div className="flex-shrink-0 h-16 flex items-end pb-2">
+              <button
+                className="w-full px-4 py-2 bg-purple-500 text-white rounded font-semibold"
+                onClick={goNextStep}
+              >
+                Next
+              </button>
+            </div>
           </div>
         </div>
       )}

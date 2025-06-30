@@ -20,9 +20,6 @@ function StudyPage() {
     setCurrentGrade,
     getLearnedKanjiForGrade,
     markLearned,
-    streak,
-    lastStudyDate,
-    completeDailySession,
   } = useStudyProgress();
   const { kanjiList, isLoading, error } = useKanjiList(currentGrade);
   const learnedKanji = getLearnedKanjiForGrade(currentGrade);
@@ -39,7 +36,6 @@ function StudyPage() {
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [detailsErrors, setDetailsErrors] = useState([]);
   const [sessionActive, setSessionActive] = useState(false);
-  const [showStreakCelebration, setShowStreakCelebration] = useState(false);
 
   // Start session: pick 5 kanji and store in sessionKanji
   const startSession = () => {
@@ -49,14 +45,8 @@ function StudyPage() {
 
   // End session: reset sessionKanji
   const handleSessionComplete = () => {
-    const prevStreak = streak;
-    const newStreak = completeDailySession();
     setSessionActive(false);
     setSessionKanji([]);
-    if (newStreak > prevStreak) {
-      setShowStreakCelebration(true);
-      setTimeout(() => setShowStreakCelebration(false), 2500);
-    }
   };
 
   // Fetch kanji details only for sessionKanji
@@ -89,38 +79,8 @@ function StudyPage() {
   }, [sessionActive, sessionKanji]);
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-8">
+    <div className="max-w-4xl mx-auto p-6 space-y-8">
       <h1 className="text-3xl font-bold text-center mb-8">Study Center</h1>
-
-      {/* Daily Streak Display */}
-      <div className="flex justify-center items-center mb-6">
-        <span className="text-lg font-semibold text-amber-600 mr-2">
-          🔥 Daily Streak:
-        </span>
-        <span className="text-2xl font-bold text-amber-500">{streak}</span>
-        {showStreakCelebration && (
-          <span className="ml-3 text-3xl animate-bounce">🎉</span>
-        )}
-      </div>
-
-      {/* Grade Selector */}
-      <div className="flex justify-center mb-8">
-        <label className="mr-3 font-semibold text-lg" htmlFor="grade-select">
-          Select Grade:
-        </label>
-        <select
-          id="grade-select"
-          value={currentGrade}
-          onChange={(e) => setCurrentGrade(e.target.value)}
-          className="px-3 py-2 rounded border border-slate-300 text-lg"
-        >
-          {GRADE_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-      </div>
 
       {/* Daily Study Section */}
       <section className="bg-white/70 rounded-xl shadow p-6 mb-8">

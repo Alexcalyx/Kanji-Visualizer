@@ -3,7 +3,6 @@
 
 const STORAGE_KEY = "kanji_study_progress";
 const CURRENT_GRADE_KEY = "kanji_study_current_grade";
-const STREAK_KEY = "kanji_study_streak";
 
 function loadProgress() {
   try {
@@ -73,33 +72,4 @@ export function setCurrentGrade(grade) {
   } catch (e) {
     // Ignore
   }
-}
-
-export function getStreakInfo() {
-  try {
-    const data = JSON.parse(localStorage.getItem(STREAK_KEY));
-    if (!data) return { streak: 0, lastStudyDate: null };
-    return data;
-  } catch (e) {
-    return { streak: 0, lastStudyDate: null };
-  }
-}
-
-export function updateStreakOnSessionComplete() {
-  const today = new Date();
-  const todayStr = today.toISOString().slice(0, 10); // YYYY-MM-DD
-  const { streak, lastStudyDate } = getStreakInfo();
-  let newStreak = 1;
-  if (lastStudyDate) {
-    const last = new Date(lastStudyDate);
-    const diff = Math.floor((today - last) / (1000 * 60 * 60 * 24));
-    if (diff === 1) newStreak = streak + 1;
-    else if (diff === 0) newStreak = streak; // already studied today
-    else newStreak = 1;
-  }
-  localStorage.setItem(
-    STREAK_KEY,
-    JSON.stringify({ streak: newStreak, lastStudyDate: todayStr })
-  );
-  return newStreak;
 }

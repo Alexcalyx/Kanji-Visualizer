@@ -14,8 +14,6 @@ import {
   getLearnedKanjiForGrade as getLearnedKanjiForGradeService,
   getCurrentGrade as getCurrentGradeService,
   setCurrentGrade as setCurrentGradeService,
-  getStreakInfo,
-  updateStreakOnSessionComplete,
 } from "../services/studyProgressService";
 
 const StudyProgressContext = createContext();
@@ -25,7 +23,6 @@ export function StudyProgressProvider({ children }) {
   const [currentGrade, setCurrentGradeState] = useState(
     getCurrentGradeService()
   );
-  const [streakInfo, setStreakInfo] = useState(getStreakInfo());
 
   // Sync with localStorage changes (in case of multiple tabs)
   useEffect(() => {
@@ -76,13 +73,6 @@ export function StudyProgressProvider({ children }) {
     setCurrentGradeState(grade);
   }, []);
 
-  // Add a function to update streak and state
-  const completeDailySession = useCallback(() => {
-    const newStreak = updateStreakOnSessionComplete();
-    setStreakInfo(getStreakInfo());
-    return newStreak;
-  }, []);
-
   const value = {
     progress,
     markLearned,
@@ -91,9 +81,6 @@ export function StudyProgressProvider({ children }) {
     getLearnedKanjiForGrade,
     currentGrade,
     setCurrentGrade,
-    streak: streakInfo.streak,
-    lastStudyDate: streakInfo.lastStudyDate,
-    completeDailySession,
   };
 
   return (
