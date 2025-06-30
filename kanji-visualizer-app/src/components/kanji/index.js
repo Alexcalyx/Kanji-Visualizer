@@ -8,3 +8,4 @@ export { default as RelatedKanji } from "./RelatedKanji";
 export { default as KanjiGraph } from "./KanjiGraph";
 export { default as KanjiStructure } from "./KanjiStructure";
 export { default as StrokeOrder } from "./StrokeOrder";
+export { default as DailyStudySession } from "./DailyStudySession";

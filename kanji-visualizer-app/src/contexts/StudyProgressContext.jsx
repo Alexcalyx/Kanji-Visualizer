@@ -14,6 +14,14 @@ import {
   getLearnedKanjiForGrade as getLearnedKanjiForGradeService,
   getCurrentGrade as getCurrentGradeService,
   setCurrentGrade as setCurrentGradeService,
+  // Session progress functions
+  getSessionProgress as getSessionProgressService,
+  saveSessionProgress as saveSessionProgressService,
+  isSessionInProgress as isSessionInProgressService,
+  resetSessionProgress as resetSessionProgressService,
+  getSessionStats as getSessionStatsService,
+  markKanjiCompleted as markKanjiCompletedService,
+  updateSessionStep as updateSessionStepService,
 } from "../services/studyProgressService";
 
 const StudyProgressContext = createContext();
@@ -22,6 +30,11 @@ export function StudyProgressProvider({ children }) {
   const [progress, setProgress] = useState({});
   const [currentGrade, setCurrentGradeState] = useState("1");
 
+  // Session progress state
+  const [sessionProgress, setSessionProgressState] = useState(null);
+  const [sessionStats, setSessionStatsState] = useState(null);
+  const [isSessionInProgress, setIsSessionInProgressState] = useState(false);
+
   // Initialize state from async service
   useEffect(() => {
     (async () => {
@@ -29,6 +42,16 @@ export function StudyProgressProvider({ children }) {
       setProgress(prog);
       const grade = await getCurrentGradeService();
       setCurrentGradeState(grade);
+
+      // Initialize session progress
+      const sessionProg = await getSessionProgressService();
+      setSessionProgressState(sessionProg);
+
+      const sessionInProg = await isSessionInProgressService();
+      setIsSessionInProgressState(sessionInProg);
+
+      const stats = await getSessionStatsService();
+      setSessionStatsState(stats);
     })();
   }, []);
 
@@ -39,6 +62,16 @@ export function StudyProgressProvider({ children }) {
       setProgress(prog);
       const grade = await getCurrentGradeService();
       setCurrentGradeState(grade);
+
+      // Sync session progress
+      const sessionProg = await getSessionProgressService();
+      setSessionProgressState(sessionProg);
+
+      const sessionInProg = await isSessionInProgressService();
+      setIsSessionInProgressState(sessionInProg);
+
+      const stats = await getSessionStatsService();
+      setSessionStatsState(stats);
     };
     window.addEventListener("storage", handler);
     return () => window.removeEventListener("storage", handler);
@@ -50,6 +83,16 @@ export function StudyProgressProvider({ children }) {
     setProgress(prog);
     const grade = await getCurrentGradeService();
     setCurrentGradeState(grade);
+
+    // Refresh session progress
+    const sessionProg = await getSessionProgressService();
+    setSessionProgressState(sessionProg);
+
+    const sessionInProg = await isSessionInProgressService();
+    setIsSessionInProgressState(sessionInProg);
+
+    const stats = await getSessionStatsService();
+    setSessionStatsState(stats);
   }, []);
 
   const markLearned = useCallback(
@@ -92,6 +135,36 @@ export function StudyProgressProvider({ children }) {
     [progress]
   );
 
+  // Session progress methods
+  const saveSessionProgress = useCallback(
+    async (progressData) => {
+      await saveSessionProgressService(progressData);
+      await refresh();
+    },
+    [refresh]
+  );
+
+  const resetSessionProgress = useCallback(async () => {
+    await resetSessionProgressService();
+    await refresh();
+  }, [refresh]);
+
+  const markKanjiCompleted = useCallback(
+    async (kanji, correct, step = 3) => {
+      await markKanjiCompletedService(kanji, correct, step);
+      await refresh();
+    },
+    [refresh]
+  );
+
+  const updateSessionStep = useCallback(
+    async (currentIndex, currentStep) => {
+      await updateSessionStepService(currentIndex, currentStep);
+      await refresh();
+    },
+    [refresh]
+  );
+
   const value = {
     progress,
     markLearned,
@@ -101,6 +174,14 @@ export function StudyProgressProvider({ children }) {
     isKanjiLearned,
     currentGrade,
     setCurrentGrade,
+    // Session progress
+    sessionProgress,
+    sessionStats,
+    isSessionInProgress,
+    saveSessionProgress,
+    resetSessionProgress,
+    markKanjiCompleted,
+    updateSessionStep,
   };
 
   return (

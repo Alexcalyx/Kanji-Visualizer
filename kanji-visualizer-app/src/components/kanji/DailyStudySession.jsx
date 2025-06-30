@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import ConfettiBurst from "../common/ConfettiBurst";
 
@@ -44,16 +44,19 @@ function Quiz({ kanji, meaning, readings, onResult }) {
   const [selected, setSelected] = useState(null);
   return (
     <div className="my-4">
-      <div className="mb-2 font-semibold">
-        What is the meaning of <span className="text-2xl">{kanji}</span>?
+      <div className="mb-4 font-semibold text-lg">
+        What is the meaning of{" "}
+        <span className="text-3xl font-bold text-purple-700">{kanji}</span>?
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3 mb-6">
         {options.map((opt) => (
           <button
             key={opt}
-            className={`px-4 py-2 rounded border ${
-              selected === opt ? "bg-purple-200" : "bg-white"
-            } hover:bg-purple-100`}
+            className={`px-6 py-4 rounded-lg border-2 font-medium text-left transition-all duration-200 ease-in-out ${
+              selected === opt
+                ? "bg-purple-100 border-purple-400 text-purple-800 shadow-md scale-105"
+                : "bg-white border-gray-200 text-gray-700 hover:bg-purple-50 hover:border-purple-300 hover:shadow-sm"
+            } focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed`}
             onClick={() => setSelected(opt)}
             disabled={selected !== null}
           >
@@ -62,20 +65,32 @@ function Quiz({ kanji, meaning, readings, onResult }) {
         ))}
       </div>
       {selected && (
-        <div className="mt-4">
+        <div className="mt-6 p-4 rounded-lg border-2">
           {selected === meaning ? (
-            <span className="text-green-600 font-bold">Correct!</span>
+            <div className="flex items-center gap-3">
+              <span className="text-green-600 font-bold text-lg">
+                ✓ Correct!
+              </span>
+              <button
+                className="px-6 py-3 bg-green-500 text-white rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-green-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 active:scale-95"
+                onClick={() => onResult(selected === meaning)}
+              >
+                Continue
+              </button>
+            </div>
           ) : (
-            <span className="text-red-600 font-bold">
-              Incorrect. The correct answer is {meaning}.
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-red-600 font-bold text-lg">
+                ✗ Incorrect. The correct answer is {meaning}.
+              </span>
+              <button
+                className="px-6 py-3 bg-red-500 text-white rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-red-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 active:scale-95"
+                onClick={() => onResult(selected === meaning)}
+              >
+                Continue
+              </button>
+            </div>
           )}
-          <button
-            className="ml-4 px-3 py-1 bg-purple-500 text-white rounded"
-            onClick={() => onResult(selected === meaning)}
-          >
-            Next
-          </button>
         </div>
       )}
     </div>
@@ -87,16 +102,59 @@ function DailyStudySession({
   kanjiDataList,
   onComplete,
   onMarkLearned,
+  onProgressUpdate,
+  onSessionStepUpdate,
+  onQuizResultsUpdate,
+  // Session progress props
+  sessionProgress,
+  onUpdateSessionStep,
+  onMarkKanjiCompleted,
 }) {
   // kanjiList: array of kanji characters (e.g., ['日', '月', ...])
   // kanjiDataList: array of { kanji, meaning, readings, ... } (same order as kanjiList)
-  const [currentIdx, setCurrentIdx] = useState(0);
-  const [step, setStep] = useState(0); // 0: lesson, 1: stroke, 2: quiz, 3: mark learned
-  const [results, setResults] = useState([]); // {kanji, correct}
+
+  // Initialize state from session progress if available
+  const [currentIdx, setCurrentIdx] = useState(
+    sessionProgress?.currentIndex || 0
+  );
+  const [step, setStep] = useState(sessionProgress?.currentStep || 0); // 0: lesson, 1: stroke, 2: quiz, 3: mark learned
+  const [results, setResults] = useState(sessionProgress?.quizResults || []); // {kanji, correct}
   const [showConfetti, setShowConfetti] = useState(false);
   const [reviewMode, setReviewMode] = useState(false);
   const [reviewKanji, setReviewKanji] = useState([]);
   const [tab, setTab] = useState("Breakdown"); // Tab state for the new layout
+
+  // Update local state when sessionProgress changes (e.g., when navigating back)
+  useEffect(() => {
+    if (sessionProgress) {
+      setCurrentIdx(sessionProgress.currentIndex || 0);
+      setStep(sessionProgress.currentStep || 0);
+      setResults(sessionProgress.quizResults || []);
+    }
+  }, [sessionProgress]);
+
+  // Auto-save session progress when state changes
+  useEffect(() => {
+    if (onSessionStepUpdate) {
+      onSessionStepUpdate(currentIdx, step);
+    }
+  }, [currentIdx, step, onSessionStepUpdate]);
+
+  // Call onProgressUpdate only in useEffect, not in render or setState
+  useEffect(() => {
+    if (onProgressUpdate) {
+      const correctCount = results.filter((r) => r && r.correct).length;
+      onProgressUpdate(currentIdx, correctCount);
+    }
+    // eslint-disable-next-line
+  }, [currentIdx, results]);
+
+  // Update quiz results in session context
+  useEffect(() => {
+    if (onQuizResultsUpdate && results.length > 0) {
+      onQuizResultsUpdate(results);
+    }
+  }, [results, onQuizResultsUpdate]);
 
   const total = kanjiList.length;
   const currentKanji = kanjiList[currentIdx];
@@ -106,6 +164,14 @@ function DailyStudySession({
   const goNextKanji = () => {
     setStep(0);
     setCurrentIdx((i) => i + 1);
+  };
+
+  // Enhanced result handling with session progress
+  const handleQuizResult = (correct) => {
+    const newResults = [...results];
+    newResults[currentIdx] = { kanji: kanjiList[currentIdx], correct };
+    setResults(newResults);
+    goNextStep();
   };
 
   const ENCOURAGEMENTS = [
@@ -167,7 +233,7 @@ function DailyStudySession({
         </div>
         {missed.length > 0 && (
           <button
-            className="mb-4 px-4 py-2 bg-purple-500 text-white rounded font-semibold"
+            className="mb-4 px-6 py-3 bg-orange-500 text-white rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-orange-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 active:scale-95"
             onClick={() => {
               setReviewMode(true);
               setReviewKanji(missed);
@@ -180,7 +246,7 @@ function DailyStudySession({
           </button>
         )}
         <button
-          className="px-6 py-2 bg-purple-500 text-white rounded font-semibold"
+          className="px-8 py-3 bg-purple-500 text-white rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-purple-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 active:scale-95"
           onClick={onComplete}
         >
           Finish
@@ -197,7 +263,7 @@ function DailyStudySession({
         <h2 className="text-2xl font-bold mb-4">Review Complete!</h2>
         <div className="mb-4">You've reviewed all missed kanji.</div>
         <button
-          className="px-6 py-2 bg-purple-500 text-white rounded font-semibold"
+          className="px-8 py-3 bg-purple-500 text-white rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-purple-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 active:scale-95"
           onClick={onComplete}
         >
           Finish
@@ -417,7 +483,7 @@ function DailyStudySession({
             {/* Row 3: Next Button - Fixed at bottom */}
             <div className="flex-shrink-0 h-16 flex items-end pb-2">
               <button
-                className="w-full px-4 py-2 bg-purple-500 text-white rounded font-semibold"
+                className="w-full px-6 py-3 bg-purple-500 text-white rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-purple-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={goNextStep}
               >
                 Next
@@ -434,7 +500,7 @@ function DailyStudySession({
             strokeSvgUrl={displayCurrentData.strokeSvgUrl}
           />
           <button
-            className="mt-4 px-4 py-2 bg-purple-500 text-white rounded"
+            className="mt-4 px-6 py-3 bg-purple-500 text-white rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-purple-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={goNextStep}
           >
             Next
@@ -448,11 +514,7 @@ function DailyStudySession({
             meaning={(displayCurrentData.meanings || [])[0] || "[meaning]"}
             readings={readingsOn.concat(readingsKun).join(", ")}
             onResult={(correct) => {
-              setResults((r) => [
-                ...r,
-                { kanji: displayCurrentKanji, correct },
-              ]);
-              setStep(3);
+              handleQuizResult(correct);
               if (correct) {
                 setShowConfetti(true);
                 setTimeout(() => setShowConfetti(false), 1200);
@@ -465,7 +527,7 @@ function DailyStudySession({
       {step === 3 && (
         <div className="text-center">
           <button
-            className="px-4 py-2 bg-purple-500 text-white rounded font-semibold mr-4"
+            className="px-6 py-3 bg-purple-500 text-white rounded-lg font-semibold mr-4 transition-all duration-200 ease-in-out hover:bg-purple-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={() => {
               onMarkLearned(displayCurrentKanji);
               goNextKanji();
@@ -474,10 +536,10 @@ function DailyStudySession({
             Mark as Learned & Next
           </button>
           <button
-            className="px-4 py-2 bg-slate-300 text-slate-700 rounded font-semibold"
-            onClick={goNextKanji}
+            className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-gray-300 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => setStep(0)}
           >
-            Skip
+            Retry
           </button>
         </div>
       )}
@@ -490,6 +552,12 @@ DailyStudySession.propTypes = {
   kanjiDataList: PropTypes.arrayOf(PropTypes.object).isRequired,
   onComplete: PropTypes.func,
   onMarkLearned: PropTypes.func.isRequired,
+  onProgressUpdate: PropTypes.func,
+  onSessionStepUpdate: PropTypes.func,
+  onQuizResultsUpdate: PropTypes.func,
+  sessionProgress: PropTypes.object,
+  onUpdateSessionStep: PropTypes.func,
+  onMarkKanjiCompleted: PropTypes.func,
 };
 
 export default DailyStudySession;
