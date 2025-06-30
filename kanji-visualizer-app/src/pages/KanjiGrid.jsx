@@ -24,8 +24,12 @@ function KanjiGrid({ grade }) {
   const debounceTimeoutRef = useRef(null);
 
   const { kanjiList, isLoading, error, isFromCache } = useKanjiList(grade);
-  const { getLearnedKanjiForGrade } = useStudyProgress();
-  const learnedCount = getLearnedKanjiForGrade(grade).length;
+  const { isKanjiLearned } = useStudyProgress();
+  // Calculate learnedCount synchronously using isKanjiLearned
+  const learnedCount = useMemo(() => {
+    if (!Array.isArray(kanjiList)) return 0;
+    return kanjiList.filter((k) => isKanjiLearned(k, grade)).length;
+  }, [kanjiList, isKanjiLearned, grade]);
 
   // --- Debounce Logic ---
   useEffect(() => {

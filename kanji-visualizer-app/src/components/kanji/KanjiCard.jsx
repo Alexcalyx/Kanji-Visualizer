@@ -36,8 +36,8 @@ function useTilt(options) {
 }
 
 function KanjiCard({ kanji, grade }) {
-  const { getLearnedKanjiForGrade } = useStudyProgress();
-  const learned = getLearnedKanjiForGrade(grade).includes(kanji);
+  const { isKanjiLearned } = useStudyProgress();
+  const learned = isKanjiLearned(kanji, grade);
 
   // Tilt effect configuration
   const tiltRef = useTilt({

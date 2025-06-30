@@ -4,8 +4,14 @@
 const STORAGE_KEY = "kanji_study_progress";
 const CURRENT_GRADE_KEY = "kanji_study_current_grade";
 const DAILY_SESSION_KEY = "kanji_study_daily_session";
+const KANJI_DETAILS_KEY = "kanji_study_details_cache"; // { [date]: { [kanji]: details } }
 
-function loadProgress() {
+function getToday() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+// --- Progress ---
+export async function loadProgress() {
   try {
     const data = localStorage.getItem(STORAGE_KEY);
     return data ? JSON.parse(data) : {};
@@ -14,51 +20,39 @@ function loadProgress() {
   }
 }
 
-function saveProgress(progress) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-  } catch (e) {
-    // Ignore
-  }
+export async function saveProgress(progress) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
 }
 
-export function getProgress() {
-  return loadProgress();
-}
-
-export function setProgress(progress) {
-  saveProgress(progress);
-}
-
-export function markLearned(kanji, grade) {
-  const progress = loadProgress();
+export async function markLearned(kanji, grade) {
+  const progress = await loadProgress();
   if (!progress[grade]) progress[grade] = [];
   if (!progress[grade].includes(kanji)) progress[grade].push(kanji);
-  saveProgress(progress);
+  await saveProgress(progress);
 }
 
-export function unmarkLearned(kanji, grade) {
-  const progress = loadProgress();
+export async function unmarkLearned(kanji, grade) {
+  const progress = await loadProgress();
   if (progress[grade]) {
     progress[grade] = progress[grade].filter((k) => k !== kanji);
-    saveProgress(progress);
+    await saveProgress(progress);
   }
 }
 
-export function resetProgress(grade) {
-  const progress = loadProgress();
+export async function resetProgress(grade) {
+  const progress = await loadProgress();
   if (progress[grade]) {
     progress[grade] = [];
-    saveProgress(progress);
+    await saveProgress(progress);
   }
 }
 
-export function getLearnedKanjiForGrade(grade) {
-  const progress = loadProgress();
+export async function getLearnedKanjiForGrade(grade) {
+  const progress = await loadProgress();
   return progress[grade] || [];
 }
 
-export function getCurrentGrade() {
+export async function getCurrentGrade() {
   try {
     const grade = localStorage.getItem(CURRENT_GRADE_KEY);
     return grade || "1";
@@ -67,7 +61,7 @@ export function getCurrentGrade() {
   }
 }
 
-export function setCurrentGrade(grade) {
+export async function setCurrentGrade(grade) {
   try {
     localStorage.setItem(CURRENT_GRADE_KEY, grade);
   } catch (e) {
@@ -75,7 +69,8 @@ export function setCurrentGrade(grade) {
   }
 }
 
-export function getTodaySession() {
+// --- Daily Session ---
+export async function getTodaySession() {
   try {
     const data = localStorage.getItem(DAILY_SESSION_KEY);
     return data ? JSON.parse(data) : null;
@@ -84,23 +79,56 @@ export function getTodaySession() {
   }
 }
 
-export function setTodaySession(kanjiList) {
-  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+export async function setTodaySession(kanjiList) {
+  const today = getToday();
   const session = { date: today, kanji: kanjiList };
   localStorage.setItem(DAILY_SESSION_KEY, JSON.stringify(session));
 }
 
-export function clearTodaySession() {
+export async function clearTodaySession() {
   localStorage.removeItem(DAILY_SESSION_KEY);
 }
 
-export function isTodaySessionAvailable() {
-  const today = new Date().toISOString().slice(0, 10);
-  const session = getTodaySession();
+export async function isTodaySessionAvailable() {
+  const today = getToday();
+  const session = await getTodaySession();
   return (
     session &&
     session.date === today &&
     Array.isArray(session.kanji) &&
     session.kanji.length === 5
   );
+}
+
+// --- Kanji Details Cache (per day) ---
+export async function getKanjiDetails(kanji, date = getToday()) {
+  try {
+    const data = localStorage.getItem(KANJI_DETAILS_KEY);
+    if (!data) return null;
+    const cache = JSON.parse(data);
+    return cache[date]?.[kanji] || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+export async function setKanjiDetails(kanji, details, date = getToday()) {
+  let cache = {};
+  try {
+    const data = localStorage.getItem(KANJI_DETAILS_KEY);
+    if (data) cache = JSON.parse(data);
+  } catch (e) {}
+  if (!cache[date]) cache[date] = {};
+  cache[date][kanji] = details;
+  localStorage.setItem(KANJI_DETAILS_KEY, JSON.stringify(cache));
+}
+
+export async function clearKanjiDetailsCache(date = getToday()) {
+  try {
+    const data = localStorage.getItem(KANJI_DETAILS_KEY);
+    if (!data) return;
+    const cache = JSON.parse(data);
+    delete cache[date];
+    localStorage.setItem(KANJI_DETAILS_KEY, JSON.stringify(cache));
+  } catch (e) {}
 }

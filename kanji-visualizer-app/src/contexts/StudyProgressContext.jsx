@@ -6,8 +6,8 @@ import React, {
   useEffect,
 } from "react";
 import {
-  getProgress as getProgressService,
-  setProgress as setProgressService,
+  loadProgress as loadProgressService,
+  saveProgress as saveProgressService,
   markLearned as markLearnedService,
   unmarkLearned as unmarkLearnedService,
   resetProgress as resetProgressService,
@@ -19,59 +19,78 @@ import {
 const StudyProgressContext = createContext();
 
 export function StudyProgressProvider({ children }) {
-  const [progress, setProgress] = useState(getProgressService());
-  const [currentGrade, setCurrentGradeState] = useState(
-    getCurrentGradeService()
-  );
+  const [progress, setProgress] = useState({});
+  const [currentGrade, setCurrentGradeState] = useState("1");
+
+  // Initialize state from async service
+  useEffect(() => {
+    (async () => {
+      const prog = await loadProgressService();
+      setProgress(prog);
+      const grade = await getCurrentGradeService();
+      setCurrentGradeState(grade);
+    })();
+  }, []);
 
   // Sync with localStorage changes (in case of multiple tabs)
   useEffect(() => {
-    const handler = () => {
-      setProgress(getProgressService());
-      setCurrentGradeState(getCurrentGradeService());
+    const handler = async () => {
+      const prog = await loadProgressService();
+      setProgress(prog);
+      const grade = await getCurrentGradeService();
+      setCurrentGradeState(grade);
     };
     window.addEventListener("storage", handler);
     return () => window.removeEventListener("storage", handler);
   }, []);
 
   // Helper to update state after service call
-  const refresh = useCallback(() => {
-    setProgress(getProgressService());
-    setCurrentGradeState(getCurrentGradeService());
+  const refresh = useCallback(async () => {
+    const prog = await loadProgressService();
+    setProgress(prog);
+    const grade = await getCurrentGradeService();
+    setCurrentGradeState(grade);
   }, []);
 
   const markLearned = useCallback(
-    (kanji, grade) => {
-      markLearnedService(kanji, grade);
-      refresh();
+    async (kanji, grade) => {
+      await markLearnedService(kanji, grade);
+      await refresh();
     },
     [refresh]
   );
 
   const unmarkLearned = useCallback(
-    (kanji, grade) => {
-      unmarkLearnedService(kanji, grade);
-      refresh();
+    async (kanji, grade) => {
+      await unmarkLearnedService(kanji, grade);
+      await refresh();
     },
     [refresh]
   );
 
   const resetProgress = useCallback(
-    (grade) => {
-      resetProgressService(grade);
-      refresh();
+    async (grade) => {
+      await resetProgressService(grade);
+      await refresh();
     },
     [refresh]
   );
 
-  const getLearnedKanjiForGrade = useCallback((grade) => {
-    return getLearnedKanjiForGradeService(grade);
+  const getLearnedKanjiForGrade = useCallback(async (grade) => {
+    return await getLearnedKanjiForGradeService(grade);
   }, []);
 
-  const setCurrentGrade = useCallback((grade) => {
-    setCurrentGradeService(grade);
+  const setCurrentGrade = useCallback(async (grade) => {
+    await setCurrentGradeService(grade);
     setCurrentGradeState(grade);
   }, []);
+
+  const isKanjiLearned = useCallback(
+    (kanji, grade) => {
+      return (progress[grade] || []).includes(kanji);
+    },
+    [progress]
+  );
 
   const value = {
     progress,
@@ -79,6 +98,7 @@ export function StudyProgressProvider({ children }) {
     unmarkLearned,
     resetProgress,
     getLearnedKanjiForGrade,
+    isKanjiLearned,
     currentGrade,
     setCurrentGrade,
   };

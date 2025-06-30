@@ -9,6 +9,8 @@ import {
   setTodaySession,
   isTodaySessionAvailable,
   clearTodaySession,
+  getKanjiDetails,
+  setKanjiDetails,
 } from "../services/studyProgressService";
 
 const GRADE_OPTIONS = [
@@ -21,14 +23,9 @@ const GRADE_OPTIONS = [
 ];
 
 function StudyPage() {
-  const {
-    currentGrade,
-    setCurrentGrade,
-    getLearnedKanjiForGrade,
-    markLearned,
-  } = useStudyProgress();
+  const { currentGrade, setCurrentGrade, isKanjiLearned, markLearned } =
+    useStudyProgress();
   const { kanjiList, isLoading, error } = useKanjiList(currentGrade);
-  const learnedKanji = getLearnedKanjiForGrade(currentGrade);
 
   // --- Daily session state ---
   const [sessionKanji, setSessionKanji] = useState([]);
@@ -39,40 +36,42 @@ function StudyPage() {
   const [sessionReady, setSessionReady] = useState(false);
   const [sessionCompleted, setSessionCompleted] = useState(false);
 
-  // On mount or when kanjiList changes, set up today's session (not on learnedKanji)
+  // On mount or when kanjiList changes, set up today's session
   useEffect(() => {
-    if (!kanjiList || kanjiList.length === 0) {
-      setSessionKanji([]);
-      setSessionReady(false);
-      return;
-    }
-    const todaySession = getTodaySession();
-    const today = new Date().toISOString().slice(0, 10);
-    if (todaySession && todaySession.date === today) {
-      setSessionKanji(todaySession.kanji);
-      setSessionReady(true);
-    } else {
-      // Generate a new set of 5 unlearned kanji
-      const dailyKanji = kanjiList
-        .filter((k) => !learnedKanji.includes(k))
-        .slice(0, 5);
-      setTodaySession(dailyKanji);
-      setSessionKanji(dailyKanji);
-      setSessionReady(true);
-    }
-    setSessionCompleted(false); // Reset completion on new session
-  }, [kanjiList]);
+    (async () => {
+      if (!kanjiList || kanjiList.length === 0) {
+        setSessionKanji([]);
+        setSessionReady(false);
+        return;
+      }
+      const todaySession = await getTodaySession();
+      const today = new Date().toISOString().slice(0, 10);
+      if (todaySession && todaySession.date === today) {
+        setSessionKanji(todaySession.kanji);
+        setSessionReady(true);
+      } else {
+        // Generate a new set of 5 unlearned kanji
+        const dailyKanji = kanjiList
+          .filter((k) => !isKanjiLearned(k, currentGrade))
+          .slice(0, 5);
+        await setTodaySession(dailyKanji);
+        setSessionKanji(dailyKanji);
+        setSessionReady(true);
+      }
+      setSessionCompleted(false); // Reset completion on new session
+    })();
+  }, [kanjiList, isKanjiLearned, currentGrade]);
 
   // Watch for session completion (all 5 kanji learned)
   useEffect(() => {
     if (
       sessionKanji.length === 5 &&
-      sessionKanji.every((k) => learnedKanji.includes(k))
+      sessionKanji.every((k) => isKanjiLearned(k, currentGrade))
     ) {
       setSessionCompleted(true);
       setSessionActive(false);
     }
-  }, [learnedKanji, sessionKanji]);
+  }, [sessionKanji, isKanjiLearned, currentGrade]);
 
   // Start session: use today's kanji
   const startSession = () => {
@@ -85,20 +84,26 @@ function StudyPage() {
     setSessionCompleted(true);
   };
 
-  // Fetch kanji details only for sessionKanji
+  // Fetch kanji details only for sessionKanji, using service cache
   useEffect(() => {
     let cancelled = false;
     async function fetchAllDetails() {
       setDetailsLoading(true);
       setDetailsErrors([]);
-      const promises = sessionKanji.map(async (k) => {
-        try {
-          return await fetchKanjiDetails(k);
-        } catch (e) {
-          return { error: e.message };
+      const results = [];
+      for (const k of sessionKanji) {
+        let details = await getKanjiDetails(k);
+        if (!details) {
+          try {
+            details = await fetchKanjiDetails(k);
+            await setKanjiDetails(k, details);
+          } catch (e) {
+            details = { error: e.message };
+            await setKanjiDetails(k, details);
+          }
         }
-      });
-      const results = await Promise.all(promises);
+        results.push(details);
+      }
       if (!cancelled) {
         setDetailsList(results);
         setDetailsLoading(false);
@@ -119,20 +124,18 @@ function StudyPage() {
     setDetailsLoading(true);
     setDetailsErrors([]);
     const failedKanji = sessionKanji.filter((k, i) => detailsList[i]?.error);
-    const promises = failedKanji.map(async (k) => {
-      try {
-        return await fetchKanjiDetails(k);
-      } catch (e) {
-        return { error: e.message };
-      }
-    });
-    const results = await Promise.all(promises);
-    // Merge retried results into detailsList
     const newDetailsList = [...detailsList];
-    failedKanji.forEach((k, idx) => {
-      const i = sessionKanji.indexOf(k);
-      if (i !== -1) newDetailsList[i] = results[idx];
-    });
+    for (const k of failedKanji) {
+      try {
+        const details = await fetchKanjiDetails(k);
+        await setKanjiDetails(k, details);
+        const i = sessionKanji.indexOf(k);
+        if (i !== -1) newDetailsList[i] = details;
+      } catch (e) {
+        const i = sessionKanji.indexOf(k);
+        if (i !== -1) newDetailsList[i] = { error: e.message };
+      }
+    }
     setDetailsList(newDetailsList);
     setDetailsLoading(false);
     setDetailsErrors(
@@ -153,7 +156,7 @@ function StudyPage() {
         </p>
         {isLoading && <div>Loading kanji...</div>}
         {error && <div className="text-red-500">{error}</div>}
-        {detailsLoading && !isLoading && <div>Loading kanji details...</div>}
+        {/* Show all kanji detail errors with advice */}
         {detailsErrors.length > 0 && (
           <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded">
             <div className="font-bold text-red-700 mb-2">
