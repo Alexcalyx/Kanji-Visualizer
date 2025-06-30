@@ -3,6 +3,7 @@
 
 const STORAGE_KEY = "kanji_study_progress";
 const CURRENT_GRADE_KEY = "kanji_study_current_grade";
+const DAILY_SESSION_KEY = "kanji_study_daily_session";
 
 function loadProgress() {
   try {
@@ -72,4 +73,34 @@ export function setCurrentGrade(grade) {
   } catch (e) {
     // Ignore
   }
+}
+
+export function getTodaySession() {
+  try {
+    const data = localStorage.getItem(DAILY_SESSION_KEY);
+    return data ? JSON.parse(data) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+export function setTodaySession(kanjiList) {
+  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  const session = { date: today, kanji: kanjiList };
+  localStorage.setItem(DAILY_SESSION_KEY, JSON.stringify(session));
+}
+
+export function clearTodaySession() {
+  localStorage.removeItem(DAILY_SESSION_KEY);
+}
+
+export function isTodaySessionAvailable() {
+  const today = new Date().toISOString().slice(0, 10);
+  const session = getTodaySession();
+  return (
+    session &&
+    session.date === today &&
+    Array.isArray(session.kanji) &&
+    session.kanji.length === 5
+  );
 }

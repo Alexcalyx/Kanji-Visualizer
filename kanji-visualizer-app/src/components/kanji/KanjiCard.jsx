@@ -36,8 +36,7 @@ function useTilt(options) {
 }
 
 function KanjiCard({ kanji, grade }) {
-  const { getLearnedKanjiForGrade, markLearned, unmarkLearned } =
-    useStudyProgress();
+  const { getLearnedKanjiForGrade } = useStudyProgress();
   const learned = getLearnedKanjiForGrade(grade).includes(kanji);
 
   // Tilt effect configuration
@@ -52,38 +51,27 @@ function KanjiCard({ kanji, grade }) {
   });
 
   // --- Styling ---
-  // Added padding here directly, responsive text size
-  const baseStyle = `group flex items-center justify-center aspect-square rounded-xl border-2 transition-all duration-300 ease-in-out shadow-lg backdrop-blur-sm relative overflow-hidden p-1`; // Added padding
-
+  const baseStyle = `group flex items-center justify-center aspect-square rounded-xl border-2 transition-all duration-300 ease-in-out shadow-lg backdrop-blur-sm relative overflow-hidden p-1`;
   const themeStyle =
     "bg-white/30 border-slate-300/50 hover:bg-sky-50/50 hover:border-sky-300";
-
   const learnedStyle = "!bg-purple-100/50 !border-purple-400";
-
-  // Adjusted checkmark size using Tailwind classes for responsiveness
-  const checkmarkBaseSize = "w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7"; // Responsive size classes
+  const checkmarkBaseSize = "w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7";
 
   return (
-    // Apply tilt ref to the wrapper motion div
     <motion.div ref={tiltRef} className="relative h-full w-full" layout>
       <Link
         to={`/kanji/${encodeURIComponent(kanji)}`}
         className={`${baseStyle} ${themeStyle} ${learned ? learnedStyle : ""}`}
         title={learned ? `${kanji} (Learned)` : `View details for ${kanji}`}
       >
-        {/* Kanji Character - RESPONSIVE FONT SIZE & LEADING */}
         <span
           className={`transition-transform duration-150 ease-in-out group-hover:scale-110 font-display leading-none
                             text-3xl sm:text-4xl md:text-5xl lg:text-6xl ${
-                              /* Text color logic */ learned
-                                ? "text-purple-700"
-                                : "text-slate-800"
+                              learned ? "text-purple-700" : "text-slate-800"
                             }`}
         >
           {kanji}
         </span>
-
-        {/* Learned Checkmark (Animated) - Using Tailwind classes */}
         {learned && (
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
@@ -94,9 +82,7 @@ function KanjiCard({ kanji, grade }) {
               stiffness: 350,
               damping: 15,
             }}
-            // Position top-right, apply responsive size classes
             className={`absolute -top-1 -right-1 pointer-events-none ${checkmarkBaseSize}`}
-            // Adjusted positioning slightly
           >
             <div className="w-full h-full">
               <Lottie
@@ -108,27 +94,6 @@ function KanjiCard({ kanji, grade }) {
           </motion.div>
         )}
       </Link>
-      {/* Learned Toggle Button */}
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (learned) {
-            unmarkLearned(kanji, grade);
-          } else {
-            markLearned(kanji, grade);
-          }
-        }}
-        className={`absolute bottom-2 right-2 px-2 py-1 rounded text-xs font-semibold shadow transition-colors z-10
-          ${
-            learned
-              ? "bg-purple-200 text-purple-800 hover:bg-purple-300"
-              : "bg-slate-200 text-slate-700 hover:bg-slate-300"
-          }`}
-        aria-label={learned ? "Unmark as Learned" : "Mark as Learned"}
-      >
-        {learned ? "Unmark as Learned" : "Mark as Learned"}
-      </button>
     </motion.div>
   );
 }
