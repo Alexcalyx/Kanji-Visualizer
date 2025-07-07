@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { Play, Loader2 } from "lucide-react";
 import ConfettiBurst from "../common/ConfettiBurst";
 
-function playAudio(audioObj) {
+function playAudio(audioObj, audioId, setPlayingAudio) {
   // Try mp3, ogg, aac, opus in order
   const src = audioObj?.mp3 || audioObj?.ogg || audioObj?.aac || audioObj?.opus;
   if (src) {
+    setPlayingAudio(audioId);
     const audio = new window.Audio(src);
-    audio.play();
+
+    audio.addEventListener("ended", () => {
+      setPlayingAudio(null);
+    });
+
+    audio.addEventListener("error", () => {
+      setPlayingAudio(null);
+    });
+
+    audio.play().catch(() => {
+      setPlayingAudio(null);
+    });
   }
 }
 
@@ -123,6 +136,7 @@ function DailyStudySession({
   const [reviewMode, setReviewMode] = useState(false);
   const [reviewKanji, setReviewKanji] = useState([]);
   const [tab, setTab] = useState("Breakdown"); // Tab state for the new layout
+  const [playingAudio, setPlayingAudio] = useState(null); // Track which audio is playing
 
   // Update local state when sessionProgress changes (e.g., when navigating back)
   useEffect(() => {
@@ -364,7 +378,6 @@ function DailyStudySession({
                 Reading
               </div>
               <div className="flex mt-1">
-                <div className="border-l-4 border-purple-300 mr-3" />
                 <div className="flex flex-col gap-1">
                   <div className="flex gap-2 items-baseline">
                     <span className="text-xs font-semibold text-purple-600 uppercase">
@@ -462,11 +475,23 @@ function DailyStudySession({
                               ex.audio.aac ||
                               ex.audio.opus) && (
                               <button
-                                className="px-2 py-1 bg-purple-100 rounded text-purple-700 hover:bg-purple-200 transition-colors"
-                                onClick={() => playAudio(ex.audio)}
+                                className={`flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-200 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 active:scale-95 cursor-pointer group ${
+                                  playingAudio === ex.id
+                                    ? "bg-purple-600 text-white"
+                                    : "bg-purple-500 hover:bg-purple-600 text-white"
+                                }`}
+                                onClick={() =>
+                                  playAudio(ex.audio, ex.id, setPlayingAudio)
+                                }
                                 aria-label={`Play audio for ${ex.japanese}`}
+                                disabled={playingAudio === ex.id}
+                                title={`Play pronunciation for "${ex.japanese}"`}
                               >
-                                ▶️
+                                {playingAudio === ex.id ? (
+                                  <Loader2 size={14} className="animate-spin" />
+                                ) : (
+                                  <Play size={14} className="ml-0.5" />
+                                )}
                               </button>
                             )}
                         </div>
