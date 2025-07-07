@@ -327,7 +327,7 @@ function DailyStudySession({
 
       {/* Step Content */}
       {step === 0 && (
-        <div className="w-full max-w-3xl mx-auto flex flex-col gap-4 sm:gap-6 min-h-0">
+        <div className="w-full max-w-3xl mx-auto flex flex-col md:flex-row gap-4 sm:gap-6 min-h-0">
           {/* Left: Kanji Image and Info */}
           <div className="flex flex-col w-full md:w-[30%] md:flex-shrink-0 px-2 py-2 sm:py-4 gap-4 sm:gap-6 items-center md:items-start">
             {/* Large Kanji Character */}
@@ -406,7 +406,7 @@ function DailyStudySession({
           </div>
 
           {/* Right: Tab Bar and Tab Content */}
-          <div className="flex flex-col flex-1 w-full md:w-[70%] min-h-0">
+          <div className="flex flex-col flex-1 w-full md:w-[70%] min-h-0 md:h-[500px]">
             {/* Row 1: Tab Names */}
             <div className="flex-shrink-0 h-10 sm:h-12 border-b border-slate-200">
               <div className="flex h-full">
@@ -427,7 +427,7 @@ function DailyStudySession({
             </div>
 
             {/* Row 2: Scrollable Content */}
-            <div className="flex-1 min-h-0 overflow-y-auto pr-1 max-h-96 sm:max-h-none">
+            <div className="flex-1 min-h-0 overflow-y-auto pr-1 max-h-96 md:max-h-none">
               {tab === "Breakdown" && (
                 <div className="py-2 sm:py-4">
                   <div className="flex flex-col items-center gap-2">
