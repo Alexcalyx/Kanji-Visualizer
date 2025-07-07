@@ -56,16 +56,19 @@ function Quiz({ kanji, meaning, readings, onResult }) {
   );
   const [selected, setSelected] = useState(null);
   return (
-    <div className="my-4">
-      <div className="mb-4 font-semibold text-lg">
+    <div className="my-4 p-4">
+      <div className="mb-4 font-semibold text-base sm:text-lg text-center">
         What is the meaning of{" "}
-        <span className="text-3xl font-bold text-purple-700">{kanji}</span>?
+        <span className="text-2xl sm:text-3xl font-bold text-purple-700">
+          {kanji}
+        </span>
+        ?
       </div>
-      <div className="flex flex-col gap-3 mb-6">
+      <div className="flex flex-col gap-2 sm:gap-3 mb-6">
         {options.map((opt) => (
           <button
             key={opt}
-            className={`px-6 py-4 rounded-lg border-2 font-medium text-left transition-all duration-200 ease-in-out ${
+            className={`px-4 sm:px-6 py-3 sm:py-4 rounded-lg border-2 font-medium text-left transition-all duration-200 ease-in-out text-sm sm:text-base ${
               selected === opt
                 ? "bg-purple-100 border-purple-400 text-purple-800 shadow-md scale-105"
                 : "bg-white border-gray-200 text-gray-700 hover:bg-purple-50 hover:border-purple-300 hover:shadow-sm"
@@ -78,26 +81,26 @@ function Quiz({ kanji, meaning, readings, onResult }) {
         ))}
       </div>
       {selected && (
-        <div className="mt-6 p-4 rounded-lg border-2">
+        <div className="mt-6 p-3 sm:p-4 rounded-lg border-2">
           {selected === meaning ? (
-            <div className="flex items-center gap-3">
-              <span className="text-green-600 font-bold text-lg">
+            <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+              <span className="text-green-600 font-bold text-base sm:text-lg">
                 ✓ Correct!
               </span>
               <button
-                className="px-6 py-3 bg-green-500 text-white rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-green-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 active:scale-95"
+                className="px-4 sm:px-6 py-3 bg-green-500 text-white rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-green-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 active:scale-95 text-sm sm:text-base"
                 onClick={() => onResult(selected === meaning)}
               >
                 Continue
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-3">
-              <span className="text-red-600 font-bold text-lg">
+            <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+              <span className="text-red-600 font-bold text-base sm:text-lg">
                 ✗ Incorrect. The correct answer is {meaning}.
               </span>
               <button
-                className="px-6 py-3 bg-red-500 text-white rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-red-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 active:scale-95"
+                className="px-4 sm:px-6 py-3 bg-red-500 text-white rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-red-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 active:scale-95 text-sm sm:text-base"
                 onClick={() => onResult(selected === meaning)}
               >
                 Continue
@@ -301,10 +304,10 @@ function DailyStudySession({
   const readingsKun = displayCurrentData.readings_kun || [];
 
   return (
-    <div className="max-w-4xl mx-auto p-4 bg-white/80 rounded-xl">
+    <div className="max-w-4xl mx-auto p-2 sm:p-4 bg-white/80 rounded-xl">
       {/* Progress Bar */}
       <div className="mb-4">
-        <div className="flex justify-between text-sm mb-1">
+        <div className="flex justify-between text-xs sm:text-sm mb-1">
           <span>
             Kanji {displayCurrentIdx + 1} / {displayTotal}
           </span>
@@ -324,30 +327,30 @@ function DailyStudySession({
 
       {/* Step Content */}
       {step === 0 && (
-        <div className="w-full max-w-3xl mx-auto p-4 md:p-8 flex flex-col md:flex-row gap-6 h-[600px] md:h-[600px]">
+        <div className="w-full max-w-3xl mx-auto flex flex-col gap-4 sm:gap-6 min-h-0">
           {/* Left: Kanji Image and Info */}
-          <div className="flex flex-col w-full md:w-[30%] md:flex-shrink-0 px-2 py-4 gap-6 items-start">
+          <div className="flex flex-col w-full md:w-[30%] md:flex-shrink-0 px-2 py-2 sm:py-4 gap-4 sm:gap-6 items-center md:items-start">
             {/* Large Kanji Character */}
-            <div className="text-9xl font-bold text-slate-800 mb-2">
+            <div className="text-6xl sm:text-8xl md:text-9xl font-bold text-slate-800 mb-2 text-center md:text-left">
               {displayCurrentKanji}
             </div>
             {/* Meaning Section */}
-            <div className="flex flex-col gap-1 w-full">
+            <div className="flex flex-col gap-1 w-full text-center md:text-left">
               <div className="text-xs font-semibold text-purple-600 uppercase tracking-wide">
                 Meaning
               </div>
-              <div className="text-2xl font-bold text-slate-800">
+              <div className="text-lg sm:text-xl md:text-2xl font-bold text-slate-800">
                 {(displayCurrentData.meanings || []).join(", ") || "[meaning]"}
               </div>
             </div>
             {/* Radical Section with Hint */}
             {displayCurrentData.radical && (
-              <div className="flex flex-col gap-1 w-full">
+              <div className="flex flex-col gap-1 w-full text-center md:text-left">
                 <div className="text-xs font-semibold text-purple-600 uppercase tracking-wide">
                   Radical
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold text-black">
+                <div className="flex items-center justify-center md:justify-start gap-2">
+                  <span className="text-lg sm:text-xl font-bold text-black">
                     {displayCurrentData.radical}
                   </span>
                   <span className="text-sm text-black">
@@ -355,14 +358,14 @@ function DailyStudySession({
                   </span>
                 </div>
                 {displayCurrentData.hint && (
-                  <div className="flex mt-1">
+                  <div className="flex mt-1 justify-center md:justify-start">
                     <div className="border-l-4 border-purple-300 mr-3" />
                     <div>
                       <span className="block text-xs font-semibold text-purple-700 uppercase mb-0.5">
                         Hint
                       </span>
                       <span
-                        className="text-black"
+                        className="text-sm sm:text-base text-black"
                         dangerouslySetInnerHTML={{
                           __html: displayCurrentData.hint,
                         }}
@@ -373,26 +376,26 @@ function DailyStudySession({
               </div>
             )}
             {/* Reading Section */}
-            <div className="flex flex-col gap-1 w-full">
+            <div className="flex flex-col gap-1 w-full text-center md:text-left">
               <div className="text-xs font-semibold text-purple-600 uppercase tracking-wide">
                 Reading
               </div>
-              <div className="flex mt-1">
+              <div className="flex mt-1 justify-center md:justify-start">
                 <div className="flex flex-col gap-1">
-                  <div className="flex gap-2 items-baseline">
+                  <div className="flex gap-2 items-baseline justify-center md:justify-start">
                     <span className="text-xs font-semibold text-purple-600 uppercase">
                       On'yomi
                     </span>
-                    <span className="text-lg font-bold text-black">
+                    <span className="text-base sm:text-lg font-bold text-black">
                       {(displayCurrentData.readings_on || []).join("、 ") ||
                         "[none]"}
                     </span>
                   </div>
-                  <div className="flex gap-2 items-baseline">
+                  <div className="flex gap-2 items-baseline justify-center md:justify-start">
                     <span className="text-xs font-semibold text-purple-600 uppercase">
                       Kun'yomi
                     </span>
-                    <span className="text-lg font-bold text-black">
+                    <span className="text-base sm:text-lg font-bold text-black">
                       {(displayCurrentData.readings_kun || []).join("、 ") ||
                         "[none]"}
                     </span>
@@ -403,14 +406,14 @@ function DailyStudySession({
           </div>
 
           {/* Right: Tab Bar and Tab Content */}
-          <div className="flex flex-col flex-1 w-full md:w-[70%] h-full">
-            {/* Row 1: Tab Names - Fixed */}
-            <div className="flex-shrink-0 h-12 border-b border-slate-200">
+          <div className="flex flex-col flex-1 w-full md:w-[70%] min-h-0">
+            {/* Row 1: Tab Names */}
+            <div className="flex-shrink-0 h-10 sm:h-12 border-b border-slate-200">
               <div className="flex h-full">
                 {["Breakdown", "Examples"].map((t) => (
                   <button
                     key={t}
-                    className={`px-4 py-2 font-semibold transition-colors border-b-2 -mb-px ${
+                    className={`px-3 sm:px-4 py-2 text-sm sm:text-base font-semibold transition-colors border-b-2 -mb-px ${
                       t === tab
                         ? "border-purple-500 text-purple-700 bg-purple-50"
                         : "border-transparent text-slate-500 hover:text-purple-600"
@@ -423,10 +426,10 @@ function DailyStudySession({
               </div>
             </div>
 
-            {/* Row 2: Scrollable Content - Fixed height, scrollable */}
-            <div className="flex-1 min-h-0 overflow-y-auto pr-1">
+            {/* Row 2: Scrollable Content */}
+            <div className="flex-1 min-h-0 overflow-y-auto pr-1 max-h-96 sm:max-h-none">
               {tab === "Breakdown" && (
-                <div className="py-4">
+                <div className="py-2 sm:py-4">
                   <div className="flex flex-col items-center gap-2">
                     <StrokeOrder
                       kanji={displayCurrentKanji}
@@ -435,14 +438,14 @@ function DailyStudySession({
                     />
                     {displayCurrentData.strokeImages &&
                       displayCurrentData.strokeImages.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mt-2">
+                        <div className="flex flex-wrap gap-1 mt-2 justify-center">
                           {displayCurrentData.strokeImages.map(
                             (imgUrl, idx) => (
                               <img
                                 key={idx}
                                 src={imgUrl}
                                 alt={`Stroke ${idx + 1}`}
-                                className="h-10 w-10 border bg-white rounded shadow-sm"
+                                className="h-8 w-8 sm:h-10 sm:w-10 border bg-white rounded"
                                 loading="lazy"
                               />
                             )
@@ -453,20 +456,20 @@ function DailyStudySession({
                 </div>
               )}
               {tab === "Examples" && (
-                <div className="py-4">
-                  <div className="space-y-3">
+                <div className="py-2 sm:py-4">
+                  <div className="space-y-2 sm:space-y-3">
                     {(displayCurrentData.examples || []).length === 0 && (
-                      <div className="text-slate-400 italic text-center py-4">
+                      <div className="text-slate-400 italic text-center py-4 text-sm sm:text-base">
                         No examples available.
                       </div>
                     )}
                     {(displayCurrentData.examples || []).map((ex) => (
                       <div
                         key={ex.id}
-                        className="bg-slate-50 rounded-lg p-3 border border-slate-200"
+                        className="bg-slate-50 rounded-lg p-2 sm:p-3 border border-slate-200"
                       >
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-lg font-medium text-slate-800">
+                        <div className="flex items-center justify-between mb-2 gap-2">
+                          <span className="text-base sm:text-lg font-medium text-slate-800 break-words">
                             {ex.japanese}
                           </span>
                           {ex.audio &&
@@ -495,7 +498,7 @@ function DailyStudySession({
                               </button>
                             )}
                         </div>
-                        <p className="text-sm text-slate-600 italic">
+                        <p className="text-xs sm:text-sm text-slate-600 italic">
                           {ex.meaning}
                         </p>
                       </div>
@@ -505,10 +508,10 @@ function DailyStudySession({
               )}
             </div>
 
-            {/* Row 3: Next Button - Fixed at bottom */}
-            <div className="flex-shrink-0 h-16 flex items-end pb-2">
+            {/* Row 3: Next Button */}
+            <div className="flex-shrink-0 pt-4 sm:pt-6">
               <button
-                className="w-full px-6 py-3 bg-purple-500 text-white rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-purple-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-4 sm:px-6 py-3 bg-purple-500 text-white rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-purple-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                 onClick={goNextStep}
               >
                 Next
@@ -518,14 +521,14 @@ function DailyStudySession({
         </div>
       )}
       {step === 1 && (
-        <div className="text-center">
+        <div className="text-center p-4">
           <StrokeOrder
             kanji={displayCurrentKanji}
             strokeMp4Url={displayCurrentData.strokeMp4Url}
             strokeSvgUrl={displayCurrentData.strokeSvgUrl}
           />
           <button
-            className="mt-4 px-6 py-3 bg-purple-500 text-white rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-purple-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-4 px-4 sm:px-6 py-3 bg-purple-500 text-white rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-purple-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
             onClick={goNextStep}
           >
             Next
@@ -550,22 +553,24 @@ function DailyStudySession({
         </>
       )}
       {step === 3 && (
-        <div className="text-center">
-          <button
-            className="px-6 py-3 bg-purple-500 text-white rounded-lg font-semibold mr-4 transition-all duration-200 ease-in-out hover:bg-purple-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={() => {
-              onMarkLearned(displayCurrentKanji);
-              goNextKanji();
-            }}
-          >
-            Mark as Learned & Next
-          </button>
-          <button
-            className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-gray-300 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={() => setStep(0)}
-          >
-            Retry
-          </button>
+        <div className="text-center p-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+            <button
+              className="px-4 sm:px-6 py-3 bg-purple-500 text-white rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-purple-600 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+              onClick={() => {
+                onMarkLearned(displayCurrentKanji);
+                goNextKanji();
+              }}
+            >
+              Mark as Learned & Next
+            </button>
+            <button
+              className="px-4 sm:px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold transition-all duration-200 ease-in-out hover:bg-gray-300 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+              onClick={() => setStep(0)}
+            >
+              Retry
+            </button>
+          </div>
         </div>
       )}
     </div>
