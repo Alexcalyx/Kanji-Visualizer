@@ -287,7 +287,7 @@ function DailyStudySession({
   const readingsKun = displayCurrentData.readings_kun || [];
 
   return (
-    <div className="max-w-4xl mx-auto p-4 bg-white/80 rounded-xl shadow">
+    <div className="max-w-4xl mx-auto p-4 bg-white/80 rounded-xl">
       {/* Progress Bar */}
       <div className="mb-4">
         <div className="flex justify-between text-sm mb-1">
