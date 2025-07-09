@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import useCache from "./useCache";
 import { fetchKanjiDetails } from "../utils/fetchKanjiDetails";
 
-// --- Environment Variables ---
-// Ensure these are correctly set in your .env file
 const KANJI_ALIVE_API_KEY = import.meta.env.VITE_RAPIDAPI_KEY;
 const KANJI_ALIVE_API_HOST = import.meta.env.VITE_RAPIDAPI_HOST;
 

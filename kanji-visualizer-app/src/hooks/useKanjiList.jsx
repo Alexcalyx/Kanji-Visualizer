@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import useCache from "./useCache";
 
-// --- Environment Variables ---
 const KANJI_ALIVE_API_KEY = import.meta.env.VITE_RAPIDAPI_KEY;
 const KANJI_ALIVE_API_HOST = import.meta.env.VITE_RAPIDAPI_HOST;
 

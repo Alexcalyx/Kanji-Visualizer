@@ -99,7 +99,6 @@ function KanjiGrid({ grade }) {
     },
   };
 
-  // --- Grade Description Helper ---
   const getGradeDescription = (id) => {
     const gradeMap = {
       1: "Grade 1 (小学校１年生)",
@@ -112,37 +111,29 @@ function KanjiGrid({ grade }) {
     return gradeMap[id] || `Grade ${id}`;
   };
 
-  // --- Render Component ---
   return (
-    // Added ref, responsive vertical spacing
     <div ref={gridTopRef} className="space-y-6 md:space-y-8 lg:space-y-10">
-      {/* Progress Indicator */}
       <ProgressIndicator total={kanjiList.length} learned={learnedCount} />
 
-      {/* Title - Responsive Text */}
       <motion.h2
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        // Responsive text size
         className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-primary-neon to-secondary-neon filter drop-shadow-neon-cyan-sm"
       >
         Kanji List
       </motion.h2>
 
-      {/* Grade Description */}
       <motion.p
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        // Responsive text size
         className="text-center text-2xl sm:text-3xl lg:text-4xl text-slate-600"
       >
         {getGradeDescription(grade)}
       </motion.p>
 
-      {/* Pagination Controls (Top) - Assuming it's responsive */}
-      {totalPages > 1 && ( // Only show if more than one page
+      {totalPages > 1 && (
         <PaginationControls
           currentPage={currentPage}
           totalPages={totalPages}
@@ -150,25 +141,21 @@ function KanjiGrid({ grade }) {
         />
       )}
 
-      {/* Animated Grid - RESPONSIVE COLUMNS & GAPS */}
       {paginatedKanjiList && paginatedKanjiList.length > 0 ? (
         <motion.div
-          key={`${grade}-${searchTerm}-${currentPage}`} // More robust key for re-animation
-          // Responsive grid columns and gaps
+          key={`${grade}-${searchTerm}-${currentPage}`}
           className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3 md:gap-4"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
           {paginatedKanjiList.map((kanji) => (
-            // Removed extra padding div around item, apply padding within item if needed
             <motion.div key={kanji} variants={itemVariants}>
               <KanjiCard kanji={kanji} grade={grade} />
             </motion.div>
           ))}
         </motion.div>
       ) : (
-        // No Results Message
         <div className="text-center text-lg italic py-16 px-6 rounded-lg text-slate-500 bg-slate-50/50 border border-slate-200/60">
           {kanjiList && kanjiList.length > 0
             ? "No Kanji found matching your search."
@@ -176,8 +163,7 @@ function KanjiGrid({ grade }) {
         </div>
       )}
 
-      {/* Pagination Controls (Bottom) - Assuming it's responsive */}
-      {totalPages > 1 && ( // Only show if more than one page
+      {totalPages > 1 && (
         <PaginationControls
           currentPage={currentPage}
           totalPages={totalPages}

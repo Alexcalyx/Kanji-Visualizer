@@ -1,26 +1,18 @@
-// KanjiCard.jsx
 import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import VanillaTilt from "vanilla-tilt"; // Ensure installed
+import VanillaTilt from "vanilla-tilt";
 import Lottie from "lottie-react";
 import { useStudyProgress } from "../../contexts/StudyProgressContext";
+import CheckLottie from "../../assets/animations/checkmark.json";
 
-import CheckLottie from "../../assets/animations/checkmark.json"; // Adjust path
-
-// Tilt effect hook
 function useTilt(options) {
   const ref = useRef(null);
   useEffect(() => {
     let tiltElement = ref.current;
     if (tiltElement && !tiltElement.vanillaTilt) {
-      // Initialize only if not already initialized
-      // Check if touch is supported, potentially disable tilt on touch devices
-      // const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      // if (!isTouchDevice) { // Option: Only enable tilt on non-touch devices
       VanillaTilt.init(tiltElement, options);
-      // }
     }
     return () => {
       if (tiltElement && tiltElement.vanillaTilt) {
@@ -31,7 +23,7 @@ function useTilt(options) {
         }
       }
     };
-  }, [options]); // Re-init if options change, ensure element exists
+  }, [options]);
   return ref;
 }
 
@@ -39,7 +31,6 @@ function KanjiCard({ kanji, grade }) {
   const { isKanjiLearned } = useStudyProgress();
   const learned = isKanjiLearned(kanji, grade);
 
-  // Tilt effect configuration
   const tiltRef = useTilt({
     max: 15,
     perspective: 1000,
@@ -50,7 +41,6 @@ function KanjiCard({ kanji, grade }) {
     gyroscope: false,
   });
 
-  // --- Styling ---
   const baseStyle = `group flex items-center justify-center aspect-square rounded-xl border-2 transition-all duration-300 ease-in-out shadow-lg backdrop-blur-sm relative overflow-hidden p-1`;
   const themeStyle =
     "bg-white/30 border-slate-300/50 hover:bg-sky-50/50 hover:border-sky-300";
