@@ -1,18 +1,15 @@
-// src/components/layout/Layout.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Footer } from "./"; // Adjust path if needed
-import AppRouter from "./AppRouter"; // Import AppRouter
-// import ThemeToggleButton from './ThemeToggleButton'; // Optional
+import { Footer } from "./";
+import AppRouter from "./AppRouter";
 
-// --- Icon Components (Forwarding refs) ---
 const HamburgerIcon = React.forwardRef(({ onClick, className }, ref) => (
   <button
-    ref={ref} // Attach ref
+    ref={ref}
     onClick={onClick}
     className={`p-2 rounded focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-neon ${className}`}
-    aria-label="Open menu" // Changed label
+    aria-label="Open menu"
   >
     <svg
       className="h-6 w-6"
@@ -32,7 +29,7 @@ const HamburgerIcon = React.forwardRef(({ onClick, className }, ref) => (
 
 const CloseIcon = React.forwardRef(({ onClick, className }, ref) => (
   <button
-    ref={ref} // Attach ref
+    ref={ref}
     onClick={onClick}
     className={`p-2 rounded focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-neon ${className}`}
     aria-label="Close menu"
@@ -54,79 +51,56 @@ const CloseIcon = React.forwardRef(({ onClick, className }, ref) => (
 ));
 
 function Layout() {
-  // --- Hooks ---
   const location = useLocation();
   const isHomePage = location.pathname === "/";
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const hamburgerRef = useRef(null);
   const closeButtonRef = useRef(null);
-  const mobileMenuRef = useRef(null); // Ref for the menu panel itself
+  const mobileMenuRef = useRef(null);
 
-  // --- Styles ---
   const navStyle = `p-4 shadow-lg sticky top-0 z-40 border-b glassmorphism glassmorphism-light border-white/20`;
   const primaryColor = "text-primary-neon";
 
-  // --- Link Styles (Desktop) ---
-  // Base styles including focus ring for desktop links
   const navLinkBase =
     "text-sm sm:text-base font-heading transition-colors duration-200 px-2 py-1 rounded-md whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-primary-neon focus:ring-offset-2";
-  // Default link styles per theme, adding appropriate focus offset color
   const navLinkDefaultLight = `text-slate-600 hover:text-primary-neon hover:bg-purple-500/10 ${navLinkBase} focus:ring-offset-white`;
-  // Active link styles per theme, adjusting focus offset color based on active bg
   const navLinkActiveLight = `bg-purple-100 text-primary-dark font-semibold ${navLinkBase} focus:ring-offset-purple-100`;
 
-  // --- Mobile Overlay Link Styles (Enhanced) ---
-  // Base styles including rounded corners, left border, and focus ring
   const mobileNavLinkBaseStyle = `block text-lg font-heading px-4 py-3 rounded-lg w-full text-left transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-neon border-l-4`;
-  // Default mobile link styles per theme, with transparent border and theme-based focus offset
   const mobileNavLinkDefaultLight = `${mobileNavLinkBaseStyle} text-slate-700 border-transparent hover:bg-purple-500/10 hover:text-primary-dark focus:ring-offset-white`;
-  // Active mobile link styles per theme, with colored border, background, and adjusted focus offset
   const mobileNavLinkActiveLight = `${mobileNavLinkBaseStyle} bg-purple-100 text-primary-dark font-semibold border-primary-neon focus:ring-offset-purple-100`;
-
-  // --- Body Scroll Lock & Anti-Shift ---
   useEffect(() => {
     const body = document.body;
 
     if (isMobileMenuOpen) {
-      // Calculate scrollbar width *before* hiding overflow
       const scrollbarWidth =
         window.innerWidth - document.documentElement.clientWidth;
-
-      // Apply styles to prevent scroll and compensate for scrollbar width
       body.style.overflow = "hidden";
 
-      // Focus management: focus close button after menu opens
       const timer = setTimeout(() => {
         closeButtonRef.current?.focus();
       }, 100);
-      return () => clearTimeout(timer); // Clear timeout if component unmounts or state changes quickly
+      return () => clearTimeout(timer);
     } else {
-      // Restore styles: Use a timeout to ensure this runs after exit animation completes
       const timer = setTimeout(() => {
         body.style.overflow = "";
-      }, 300); // Duration should match or exceed the exit animation duration
+      }, 300);
       return () => clearTimeout(timer);
     }
 
-    // Cleanup function for component unmount
     return () => {
       body.style.overflow = "";
     };
-  }, [isMobileMenuOpen]); // Depend only on the menu state
+  }, [isMobileMenuOpen]);
 
-  // Close mobile menu when location changes
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location]);
 
-  // --- Menu Closing Handler ---
   const closeMenu = () => {
     setIsMobileMenuOpen(false);
-    // Restore focus to the hamburger button after closing
     hamburgerRef.current?.focus();
   };
-
-  // --- Render Component ---
   return (
     <div className={`min-h-screen flex flex-col relative`}>
       {/* Navigation Bar */}
@@ -137,7 +111,6 @@ function Layout() {
         className={navStyle}
       >
         <div className="container mx-auto flex justify-between items-center px-4 sm:px-6">
-          {/* Logo - Adjusted Sizes and Wrapping */}
           <NavLink
             to="/"
             className={`font-heading font-bold ${primaryColor} transition-colors flex flex-col items-start sm:flex-row sm:items-center sm:gap-1 hover:brightness-125`}
@@ -153,9 +126,7 @@ function Layout() {
             </span>
           </NavLink>
 
-          {/* Right side items */}
           <div className="flex items-center">
-            {/* Desktop Grade Links */}
             {!isHomePage && (
               <div className="hidden md:flex items-center space-x-1 lg:space-x-2 mr-2">
                 {[1, 2, 3, 4, 5, 6].map((grade) => (
@@ -172,12 +143,11 @@ function Layout() {
               </div>
             )}
 
-            {/* Hamburger Button */}
             {!isHomePage && (
               <div className="md:hidden ml-2">
                 <HamburgerIcon
-                  ref={hamburgerRef} // Assign ref
-                  onClick={() => setIsMobileMenuOpen(true)} // Open menu
+                  ref={hamburgerRef}
+                  onClick={() => setIsMobileMenuOpen(true)}
                   className={`text-slate-700`}
                 />
               </div>
@@ -186,23 +156,20 @@ function Layout() {
         </div>
       </motion.nav>
 
-      {/* --- Mobile Menu Overlay --- */}
       <AnimatePresence>
         {isMobileMenuOpen && !isHomePage && (
-          // Backdrop (for clicking outside menu to close)
           <motion.div
             key="backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/50 z-50" // z-index below panel, above nav
-            onClick={closeMenu} // Use the close handler
+            className="fixed inset-0 bg-black/50 z-50"
+            onClick={closeMenu}
             aria-hidden="true"
           />
         )}
         {isMobileMenuOpen && !isHomePage && (
-          // Menu Panel (Slides from right, rounded)
           <motion.div
             key="mobile-menu-panel"
             ref={mobileMenuRef} // Assign ref to panel
@@ -215,7 +182,6 @@ function Layout() {
             aria-modal="true" // Indicates it's a modal dialog
             aria-labelledby="mobile-menu-title" // Associates with the title
           >
-            {/* Menu Header with Title and Close Button */}
             <div
               className={`flex justify-between items-center p-4 border-b border-slate-200`}
             >
@@ -226,44 +192,36 @@ function Layout() {
                 Menu
               </h2>
               <CloseIcon
-                ref={closeButtonRef} // Assign ref to close button
-                onClick={closeMenu} // Use the close handler
+                ref={closeButtonRef}
+                onClick={closeMenu}
                 className={`text-slate-600`}
               />
             </div>
 
-            {/* Scrollable Menu Links */}
             <nav className="flex-grow p-4 space-y-2 overflow-y-auto">
               {[1, 2, 3, 4, 5, 6].map((grade) => (
                 <NavLink
                   key={`mobile-${grade}`}
                   to={`/grade/${grade}`}
-                  className={(
-                    { isActive } // Apply enhanced mobile styles
-                  ) =>
+                  className={({ isActive }) =>
                     isActive
                       ? mobileNavLinkActiveLight
                       : mobileNavLinkDefaultLight
                   }
-                  onClick={closeMenu} // Close menu on link click
+                  onClick={closeMenu}
                 >
                   Grade {grade}
                 </NavLink>
               ))}
             </nav>
-
-            {/* Optional Footer area inside menu */}
-            {/* <div className="p-4 border-t border-slate-200 dark:border-slate-700"> ... </div> */}
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Main Content Area */}
       <main className="container mx-auto p-4 py-6 md:p-6 md:py-8 relative z-10 flex-grow">
         <AppRouter />
       </main>
 
-      {/* Footer Component */}
       <Footer />
     </div>
   );

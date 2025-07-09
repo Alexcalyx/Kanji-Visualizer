@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import PropTypes from "prop-types";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search } from "lucide-react"; // Using lucide-react for icons
-import useKanjiList from "../hooks/useKanjiList"; // Adjust path
+import { Search } from "lucide-react";
+import useKanjiList from "../hooks/useKanjiList";
 import { KanjiCard } from "../components/kanji";
 import {
   PaginationControls,
@@ -12,8 +12,7 @@ import {
 import ProgressIndicator from "../components/common/ProgressIndicator";
 import { useStudyProgress } from "../contexts/StudyProgressContext";
 
-// --- Constants ---
-const ITEMS_PER_PAGE = 40; // Keep items per page manageable
+const ITEMS_PER_PAGE = 40;
 
 function KanjiGrid({ grade }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,38 +24,32 @@ function KanjiGrid({ grade }) {
 
   const { kanjiList, isLoading, error, isFromCache } = useKanjiList(grade);
   const { isKanjiLearned } = useStudyProgress();
-  // Calculate learnedCount synchronously using isKanjiLearned
   const learnedCount = useMemo(() => {
     if (!Array.isArray(kanjiList)) return 0;
     return kanjiList.filter((k) => isKanjiLearned(k, grade)).length;
   }, [kanjiList, isKanjiLearned, grade]);
 
-  // --- Debounce Logic ---
   useEffect(() => {
     if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
     debounceTimeoutRef.current = setTimeout(() => {
       setSearchTerm(inputValue);
-      setCurrentPage(1); // Reset to page 1 on new search
-    }, 300); // 300ms debounce delay
+      setCurrentPage(1);
+    }, 300);
     return () => {
       if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
     };
   }, [inputValue]);
 
-  // --- Filtering Logic ---
   const filteredKanjiList = useMemo(() => {
     if (!Array.isArray(kanjiList)) return [];
     if (!searchTerm) return kanjiList;
-    const lowerSearchTerm = searchTerm.toLowerCase().trim(); // Trim search term
-    if (!lowerSearchTerm) return kanjiList; // Handle empty trimmed search
-    // Simple character inclusion check
+    const lowerSearchTerm = searchTerm.toLowerCase().trim();
+    if (!lowerSearchTerm) return kanjiList;
     return kanjiList.filter(
       (k) => k && typeof k === "string" && k.includes(lowerSearchTerm)
     );
-    // Note: If searching by meaning/reading is needed, API/data structure needs adjustment
   }, [kanjiList, searchTerm]);
 
-  // --- Pagination Logic ---
   const totalItems = filteredKanjiList.length;
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
@@ -66,11 +59,9 @@ function KanjiGrid({ grade }) {
     return filteredKanjiList.slice(startIndex, endIndex);
   }, [filteredKanjiList, currentPage]);
 
-  // --- Page Change Handler ---
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
-      // Scroll to top of grid smoothly
       gridTopRef.current?.scrollIntoView({
         behavior: "smooth",
         block: "start",
@@ -78,7 +69,6 @@ function KanjiGrid({ grade }) {
     }
   };
 
-  // --- Loading State ---
   if (isLoading)
     return (
       <div className="flex flex-col items-center justify-center min-h-[40vh]">
@@ -86,15 +76,12 @@ function KanjiGrid({ grade }) {
       </div>
     );
 
-  // --- Error State ---
   if (error)
     return (
       <div className="mt-10">
         <ErrorDisplay message={error} context={`Grade ${grade} Kanji List`} />
       </div>
     );
-
-  // --- Animation Variants ---
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
