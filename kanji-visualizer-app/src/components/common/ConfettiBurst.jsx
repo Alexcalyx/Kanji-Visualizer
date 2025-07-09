@@ -19,7 +19,6 @@ function ConfettiBurst({ trigger }) {
     }
   }, [trigger]);
 
-  // Fallback: SVG burst (static)
   if (!confetti && trigger) {
     return (
       <svg width="120" height="60" className="mx-auto my-4 animate-pulse">

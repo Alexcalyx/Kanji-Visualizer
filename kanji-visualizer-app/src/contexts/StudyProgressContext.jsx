@@ -55,7 +55,6 @@ export function StudyProgressProvider({ children }) {
     })();
   }, []);
 
-  // Sync with localStorage changes (in case of multiple tabs)
   useEffect(() => {
     const handler = async () => {
       const prog = await loadProgressService();

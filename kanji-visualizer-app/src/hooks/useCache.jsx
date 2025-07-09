@@ -91,7 +91,6 @@ function useCache() {
     }
   }, []);
 
-  // Get cached data (memory first, then localStorage)
   const getCached = useCallback(
     (type, identifier, ttl) => {
       const key = getCacheKey(type, identifier);
@@ -113,7 +112,6 @@ function useCache() {
     [getCacheKey, getFromMemory, getFromStorage, setInMemory]
   );
 
-  // Set cached data (both memory and localStorage)
   const setCached = useCallback(
     (type, identifier, data, ttl) => {
       const key = getCacheKey(type, identifier);

@@ -5,7 +5,6 @@ function KanjiExamples({ examples = [] }) {
   // Removed scroll logic as item count is limited by parent
 
   const handlePlayAudio = (audioData) => {
-    // TODO: Implement audio playback logic here
     const audioSrc =
       audioData?.mp3 || audioData?.ogg || audioData?.aac || audioData?.opus;
     if (audioSrc) {

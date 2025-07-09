@@ -24,7 +24,6 @@ function playAudio(audioObj, audioId, setPlayingAudio) {
   }
 }
 
-// Placeholder for stroke order, examples, and quiz (to be replaced with real data/components)
 function StrokeOrder({ kanji, strokeMp4Url, strokeSvgUrl }) {
   if (!strokeMp4Url && !strokeSvgUrl)
     return <div className="my-4">[No stroke order available]</div>;
@@ -126,9 +125,6 @@ function DailyStudySession({
   onUpdateSessionStep,
   onMarkKanjiCompleted,
 }) {
-  // kanjiList: array of kanji characters (e.g., ['日', '月', ...])
-  // kanjiDataList: array of { kanji, meaning, readings, ... } (same order as kanjiList)
-
   // Initialize state from session progress if available
   const [currentIdx, setCurrentIdx] = useState(
     sessionProgress?.currentIndex || 0
@@ -141,7 +137,6 @@ function DailyStudySession({
   const [tab, setTab] = useState("Breakdown"); // Tab state for the new layout
   const [playingAudio, setPlayingAudio] = useState(null); // Track which audio is playing
 
-  // Update local state when sessionProgress changes (e.g., when navigating back)
   useEffect(() => {
     if (sessionProgress) {
       setCurrentIdx(sessionProgress.currentIndex || 0);
